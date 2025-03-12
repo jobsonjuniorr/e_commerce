@@ -6,7 +6,7 @@ const loginUser = async (email, senha) => {
 
     try {
         const [rows] = await connection.execute(
-            "SELECT id, nome, email, senha FROM usuarios WHERE email = ?",
+            "SELECT id, nome, email, senha, tipo FROM usuarios WHERE email = ?",
             [email]
         );
 

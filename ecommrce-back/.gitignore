@@ -1,0 +1,18 @@
+# Node.js
+node_modules/
+
+# Arquivos de configuração do ambiente
+.env
+.env.local
+
+# Arquivos de log
+npm-debug.log
+yarn-error.log
+
+# Arquivos do sistema
+.DS_Store
+
+# Arquivos de cache e backup
+*.log
+*.bak
+*.swp

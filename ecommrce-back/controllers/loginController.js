@@ -1,8 +1,9 @@
 import jwt from "jsonwebtoken";
 import User from "../models/loginModel.js";
+import dotenv from "dotenv";
 
-const ACCESS_SECRET = "919192381"; 
-const REFRESH_SECRET = "9193913919"; 
+dotenv.config();
+
 
 export const loginUser = async (req, res) => {
     try {
@@ -11,20 +12,19 @@ export const loginUser = async (req, res) => {
 
         const accessToken = jwt.sign(
             { id: user.id, nome: user.nome, email: user.email },
-            ACCESS_SECRET,
-            { expiresIn: "15m" }  // Token de acesso expira rápido
+            process.env.JWT_SECRET,
+            { expiresIn: "15m" }  
         );
 
         const refreshToken = jwt.sign(
             { id: user.id },
-            REFRESH_SECRET,
-            { expiresIn: "7d" }  // Token de atualização dura mais
+            process.env.REFRESH_SECRET,
+            { expiresIn: "7d" }  
         );
 
-        // Agora chamamos a função do model para armazenar o refresh token
         await User.storeRefreshToken(user.id, refreshToken);
 
-        res.json({ message: "Login bem-sucedido", accessToken, refreshToken });
+        res.json({ message: "Login bem-sucedido", accessToken, refreshToken, tipo: user.tipo });
     } catch (error) {
         res.status(401).json({ error: error.message });
     }
