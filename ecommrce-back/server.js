@@ -1,7 +1,7 @@
 import express from 'express'
-import router from  './routes/routes.js'
+import router from  './routes/PublicRoutes.js'
 import cors from 'cors'
-import protectedRouter from './routes/protectRoutes.js'
+import protectedRouter from './routes/PrivateRoutes.js'
 
 const app = express()
 const port =  5000
