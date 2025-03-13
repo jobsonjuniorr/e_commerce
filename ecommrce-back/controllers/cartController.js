@@ -42,7 +42,11 @@ export const getCart = async (req, res) => {
         }
 
         const cartItems = await Cart.getCart(usuario_id);
-
+        if(cartItems.length === 0){
+           return res.status(200).json({
+                message: "Carrinho Vazio",
+            });
+        }
         res.status(200).json({
             message: "Lista do carrinho do usuário",
             cart: cartItems, 
@@ -56,3 +60,55 @@ export const getCart = async (req, res) => {
         });
     }
 };
+
+
+export const deleteCartOne = async(req,res) =>{
+    try{
+        const {id} = req.body
+
+        console.log(id)
+
+        if(!id){
+          return res.status(401).json({ error: "Item não encontrado" });
+        }
+
+        const deleteItem = await Cart.deleteCartOne(id)
+
+        res.status(200).json({
+            message: "Item deletado!",
+        });
+
+        
+    }catch(error){
+        console.error("Erro ao deletar o item do carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
+
+    }
+}
+
+export const deleteCartAll = async(req,res) =>{
+    try{
+        const {usuario_id} = req.body
+
+        if(!usuario_id){
+            return res.status(401).json({ error: "Nenhum item no carrinho para ser deletado" });
+        }
+
+        const deleteAllCart = await Cart.deleteAll(usuario_id)
+
+        res.status(200).json({
+            message: "Todos os itens deletados com sucesso!",
+        });
+
+    }catch(error){
+        console.error("Erro ao deletar o item do carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
+
+    }
+}

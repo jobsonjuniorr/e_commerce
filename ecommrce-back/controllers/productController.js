@@ -60,3 +60,18 @@ export const getProductById = async (req, res) => {
         res.status(500).json({ error: "Erro ao buscar o produto" });
     }
 };
+
+export const deleteProduct = async(req,res) =>{
+    try{
+        const {id} = req.body
+
+        if(!id){
+            return res.status(404).json({message:"Produto não encontrado"})
+        }
+        const deleteProduct = await Product.deleteProduct(id) 
+        
+        res.status(200).json({message:"Item deletado com sucesso"})
+    }catch(error){
+        res.status(500).json({error:"Erro ao deletar produto"})
+    }
+}

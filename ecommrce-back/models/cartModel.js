@@ -1,12 +1,12 @@
 import pool from "../db/db.js";
 
-const addCart = async (usuario_id,produto_id,quantidade,preco)=>{
+const addCart = async (usuario_id, produto_id, quantidade, preco) => {
     const connection = await pool.getConnection()
 
-    try{
+    try {
         const precoNumerico = parseFloat(preco)
-        
-        const [result] = await connection.execute("INSERT INTO carrinho (usuario_id,produto_id,quantidade,preco) VALUES (?,?,?,?)", [usuario_id,produto_id,quantidade,precoNumerico])
+
+        const [result] = await connection.execute("INSERT INTO carrinho (usuario_id,produto_id,quantidade,preco) VALUES (?,?,?,?)", [usuario_id, produto_id, quantidade, precoNumerico])
         console.log("Item adicionado ao carrinho com ID:", result.insertId);
         return {
             id: result.insertId,
@@ -15,17 +15,43 @@ const addCart = async (usuario_id,produto_id,quantidade,preco)=>{
             quantidade,
             preco: precoNumerico,
         };
-    }catch(error){
+    } catch (error) {
         throw error
-    }finally{
-       connection.release()
+    } finally {
+        connection.release()
     }
 }
 
-const getCart = async (usuario_id) =>{
+const getCart = async (usuario_id) => {
+    const connection = await pool.getConnection()
+    try {
+        const [result] = await connection.execute("SELECT * FROM carrinho WHERE usuario_id = ?", [usuario_id])
+        return result
+    } catch (error) {
+        throw error
+    } finally {
+        connection.release()
+    }
+}
+
+
+const deleteCartOne = async (id) => {
+    const connection = await pool.getConnection()
+    try {
+        const [result] = await connection.execute("DELETE FROM carrinho WHERE id = ? ", [id])
+        return result
+    } catch (error) {
+        throw error
+    } finally {
+        connection.release()
+    }
+}
+
+
+const deleteAll = async (usuario_id) =>{
     const connection = await pool.getConnection()
     try{
-        const [result] = await connection.execute("SELECT * FROM carrinho WHERE usuario_id = ?",[usuario_id])
+        const [result] = await connection.execute("DELETE FROM carrinho WHERE usuario_id = ? ",[usuario_id])
         return result
     }catch(error){
         throw error
@@ -33,6 +59,6 @@ const getCart = async (usuario_id) =>{
         connection.release()
     }
 }
- 
 
-export default  {addCart,getCart}
+
+export default { addCart, getCart,deleteCartOne,deleteAll }

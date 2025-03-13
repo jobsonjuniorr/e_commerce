@@ -51,4 +51,18 @@ const getProductById = async (id) => {
     }
 };
 
-export default { addProduct, getProducts, getProductById };
+const deleteProduct =  async (id) =>{
+    const connection = await pool.getConnection()
+
+    try{
+        const [result] = await connection.execute("DELETE FROM produtos WHERE id = ?",[id])
+        return result
+    }catch(error){
+        console.error("Erro ao buscar produto por ID:", error);
+        throw new Error("Erro ao buscar produto no banco de dados.");
+    }finally{
+        connection.release()
+    }
+}
+
+export default { addProduct, getProducts, getProductById,deleteProduct };
