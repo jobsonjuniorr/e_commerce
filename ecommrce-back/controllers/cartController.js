@@ -1,36 +1,58 @@
 import Cart from "../models/cartModel.js";
+import Product from "../models/productModel.js";
 
-export const cart = async (req,res) =>{
-    try{
-        const {usuario_id,produto_id,quantidade,preco} = req.body
-        
-        if (!usuario_id || !produto_id || !quantidade || !preco) {
-            return res.status(400).json({ error: "Todos os campos são obrigatórios" });
+export const cart = async (req, res) => {
+    try {
+        const usuario_id = req.usuario?.id;
+        if (!usuario_id) {
+            return res.status(401).json({ error: "Usuário não autenticado" });
+        }
+
+        const { produto_id } = req.body; 
+        if (!produto_id) {
+            return res.status(400).json({ error: "Produto inválido" });
+        }
+
+        const produto = await Product.getProductById(produto_id);
+        if (!produto) {
+            return res.status(404).json({ error: "Produto não encontrado" });
         }
 
 
-        const addCartResult = await Cart.addCart(usuario_id,produto_id,quantidade,preco)
+        const quantidade = 1; 
+        const preco = produto.preco;  
 
-        res.status(201).json({messam:"Adicionado ao carrinho",ItemCart: addCartResult})
+     
+        const addCartResult = await Cart.addCart(usuario_id, produto_id, quantidade, preco);
 
-    }catch(error){
+        res.status(201).json({ message: "Produto adicionado ao carrinho", itemCart: addCartResult });
+
+    } catch (error) {
         console.error("Erro ao adicionar ao carrinho:", error);
         res.status(500).json({ error: "Erro interno do servidor", details: error.message });
     }
-}
+};
 
-export const getCart = async(req,res) =>{
-    try{
-        const {usuario_id} = req.params
+export const getCart = async (req, res) => {
+    try {
+        const usuario_id = req.usuario?.id;
 
-        const getCart = await Cart.getCart(usuario_id)
-
-        if(getCart.length === 0){
-            return res.status(404).json({ error: "Nenhum item no carrinho." });
+        if (!usuario_id) {
+            return res.status(401).json({ error: "Usuário não autenticado." });
         }
-        res.status(201).json({message:"Lista do carrinho do usuário", getCart})
-    }catch(error){
-        console.error("Erro ao lista o carrinho:", error);
-        res.status(500).json({ error: "Erro interno do servidor", details: error.message });
+
+        const cartItems = await Cart.getCart(usuario_id);
+
+        res.status(200).json({
+            message: "Lista do carrinho do usuário",
+            cart: cartItems, 
+        });
+
+    } catch (error) {
+        console.error("Erro ao listar o carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
     }
-}
+};

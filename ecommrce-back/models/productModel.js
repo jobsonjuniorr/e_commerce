@@ -1,38 +1,54 @@
-import pool from "../db/db.js"
-
+import pool from "../db/db.js";
 
 const addProduct = async (nome, descricao, preco, estoque, categoria, imagem) => {
-    const connection = await pool.getConnection()
+    const connection = await pool.getConnection();
 
     try {
-        const [result] = await connection.execute("INSERT INTO produtos (nome, descricao, preco, estoque, categoria, imagem) VALUES (?, ?, ?, ?, ?, ?)",
-            [nome, descricao, preco, estoque, categoria, imagem])
+        const [result] = await connection.execute(
+            "INSERT INTO produtos (nome, descricao, preco, estoque, categoria, imagem) VALUES (?, ?, ?, ?, ?, ?)",
+            [nome, descricao, preco, estoque, categoria, imagem]
+        );
+
         return { id: result.insertId, nome, descricao, preco, estoque, categoria, imagem };
     } catch (error) {
-        throw error
-    }finally{
-        connection.release()
+        console.error("Erro ao adicionar produto:", error);
+        throw new Error("Erro ao adicionar produto ao banco de dados.");
+    } finally {
+        connection.release();
     }
-}
+};
 
-const getProduct = async(id = null) =>{
-    const connection = await pool.getConnection()
+const getProducts = async () => {
+    const connection = await pool.getConnection();
 
-    try{
-        let query = "SELECT * FROM produtos";
-        const params = [];
+    try {
+        const [result] = await connection.execute("SELECT * FROM produtos");
+        return result;
+    } catch (error) {
+        console.error("Erro ao buscar produtos:", error);
+        throw new Error("Erro ao buscar produtos.");
+    } finally {
+        connection.release();
+    }
+};
 
-        if (id) {
-            query += " WHERE id = ?";
-            params.push(id);
+const getProductById = async (id) => {
+    const connection = await pool.getConnection();
+
+    try {
+        const [result] = await connection.execute("SELECT * FROM produtos WHERE id = ?", [id]);
+
+        if (result.length === 0) {
+            return null; 
         }
 
-        const [result] = await connection.execute(query, params);
-        return result;
-    }catch(error){
-        throw error
-    }finally{
-        connection.release()
+        return result[0];
+    } catch (error) {
+        console.error("Erro ao buscar produto por ID:", error);
+        throw new Error("Erro ao buscar produto no banco de dados.");
+    } finally {
+        connection.release();
     }
-}
-export default {addProduct, getProduct}
+};
+
+export default { addProduct, getProducts, getProductById };

@@ -10,6 +10,6 @@ protectedRouter.post("/enderecos", authMiddleware, registerAddress);
 protectedRouter.post("/products", authMiddleware, createProduct)
 protectedRouter.get("/listIdProduct/:id",authMiddleware, getProductById)
 protectedRouter.post("/cart",authMiddleware,cart)
-protectedRouter.get("/listCart/:usuario_id",authMiddleware,getCart)
+protectedRouter.get("/listCart",authMiddleware,getCart)
 
 export default protectedRouter;
