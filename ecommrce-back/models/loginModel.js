@@ -29,18 +29,5 @@ const loginUser = async (email, password) => {
     }
 };
 
-const storeRefreshToken = async (userId, refreshToken) => {
-    const connection = await pool.getConnection();
-    try {
-        await connection.execute(
-            "UPDATE usuarios SET refresh_token = ? WHERE id = ?",
-            [refreshToken, userId]
-        );
-    } catch (error) {
-        throw error;
-    } finally {
-        connection.release();
-    }
-};
 
-export default { loginUser, storeRefreshToken };
+export default { loginUser };

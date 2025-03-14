@@ -1,79 +1,87 @@
 import { useNavigate, Link } from "react-router"
 import Image from "/assets/login.jpg"
-import { FormEvent,useRef} from "react"
-
+import { FormEvent, useEffect, useRef, useState } from "react"
+import ErrorNotification from "../../components/errroNotification"
 
 
 function Login() {
     const emailRef = useRef<HTMLInputElement>(null)
     const passwordRef = useRef<HTMLInputElement>(null)
+    const [error, setError] = useState<string | null>(null)
     const navigate = useNavigate()
-    
-    function clearInputs(){
+
+    function clearInputs() {
         emailRef.current!.value = ""
         passwordRef.current!.value = ""
     }
-    async function hadleSumit(event:FormEvent){
+    async function hadleSumit(event: FormEvent) {
         event.preventDefault()
 
         const email = emailRef.current?.value.trim()
         const password = passwordRef.current?.value.trim()
-        
-        console.log(email,password)
 
-        if(!email || !password){
-            alert("Campos não preenchidos")
+        console.log(email, password)
+
+        if (!email || !password) {
+            setError("Campos não preenchidos")
             return
         }
 
-        try{
-            const response = await fetch("http://localhost:5000/api/login",{
-                method:"POST",
-                headers:{
+        try {
+            const response = await fetch("http://localhost:5000/api/login", {
+                method: "POST",
+                headers: {
                     "Content-Type": "application/json",
                 },
                 body: JSON.stringify({
-                    email,password
+                    email, password
                 })
             })
 
             if (response.status === 404) {
-                 alert("Usuário não encontrado")
+                setError("Usuário não encontrado")
                 return
-               }
-         
-               if (response.status === 401) {
-                 alert("Senha incorreta.");
-                 passwordRef.current!.value = ''
-                 return;
-               }
+            }
+
+            if (response.status === 401) {
+                setError("Senha incorreta.");
+                passwordRef.current!.value = ''
+                return;
+            }
             if (!response.ok) {
-                alert("Erro inesperado.");
+                setError("Erro inesperado.");
                 clearInputs()
                 return;
-              }
-            const {token} = await response.json()
-            if(!token || typeof token !== 'string'){
-                throw new Error("Token inválido recebido do servidor")
             }
-           
-            localStorage.setItem("token",token)
+            const { token } = await response.json()
+            if (!token || typeof token !== 'string') {
+                setError("Erro no servidor")
+            }
+
+            localStorage.setItem("token", token)
             navigate("/")
 
-        }catch(err: any){
-            alert("Erro no servido")
+        } catch (err: any) {
+            setError("Erro no servido")
         }
-        
+
     }
-
-
+    useEffect(() => {
+        if (error) {
+            const timeoutId = setTimeout(() => {
+                setError(null);
+            }, 3000)
+            return () => clearTimeout(timeoutId)
+        }
+    
+    },[error])
     return (
         <div className="h-dvh flex items-center justify-center flex-col md:flex-row">
 
             <img src={Image} alt="Login-Imagem" className="hidden md:block md:h-5/6" />
-            
+            {error && <ErrorNotification message={error} onClose={() => setError(null)}></ErrorNotification>}
             <form className="flex flex-col 2xl:h-2/6 p-6 gap-4 2xl:gap-9 2xl:4xl items-center justify-center h-full w-full md:h-5/6 md:w-2/6 bg-red-100" onSubmit={hadleSumit}>
-            <h2 className="text-2xl font-bold  text-center text-paragraph 2xl:text-5xl">Login</h2>
+                <h2 className="text-2xl font-bold  text-center text-paragraph 2xl:text-5xl">Login</h2>
                 <input
                     ref={emailRef}
                     type="email"
@@ -90,12 +98,12 @@ function Login() {
                     Login
                 </button>
                 <p className="text-text w-full flex justify-center gap-2  2xl:text-4xl " >
-                 Não tem uma conta?  <Link to="/register" className="text-text duration-200 hover:text-link hover:underline  block text-center">
-                Cadastre-se
-              </Link>
-            </p>
+                    Não tem uma conta?  <Link to="/register" className="text-text duration-200 hover:text-link hover:underline  block text-center">
+                        Cadastre-se
+                    </Link>
+                </p>
             </form>
-          
+
         </div>
     )
 }
