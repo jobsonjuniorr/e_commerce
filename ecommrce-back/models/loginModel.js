@@ -1,7 +1,7 @@
 import pool from "../db/db.js";
 import bcrypt from "bcrypt";
 
-const loginUser = async (email, senha) => {
+const loginUser = async (email, password) => {
     const connection = await pool.getConnection();
 
     try {
@@ -11,14 +11,14 @@ const loginUser = async (email, senha) => {
         );
 
         if (rows.length === 0) {
-            throw new Error("Usuário não encontrado");
+            return {error:"Usuário não encontrado"}
         }
 
         const user = rows[0];
-        const correctPassword = await bcrypt.compare(senha, user.senha);
+        const correctPassword = await bcrypt.compare(password, user.senha);
 
         if (!correctPassword) {
-            throw new Error("Senha incorreta");
+          return{error:"Senha incorreta"}
         }
 
         return user;
