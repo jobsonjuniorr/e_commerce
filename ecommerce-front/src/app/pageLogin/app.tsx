@@ -2,6 +2,7 @@ import { useNavigate, Link } from "react-router"
 import Image from "/assets/login.jpg"
 import { FormEvent, useEffect, useRef, useState } from "react"
 import ErrorNotification from "../../components/errroNotification"
+import Api from "../../services/api"
 
 
 function Login() {
@@ -10,61 +11,25 @@ function Login() {
     const [error, setError] = useState<string | null>(null)
     const navigate = useNavigate()
 
-    function clearInputs() {
-        emailRef.current!.value = ""
-        passwordRef.current!.value = ""
-    }
     async function hadleSumit(event: FormEvent) {
-        event.preventDefault()
-
-        const email = emailRef.current?.value.trim()
-        const password = passwordRef.current?.value.trim()
-
-        console.log(email, password)
-
+        event.preventDefault();
+    
+        const email = emailRef.current?.value.trim();
+        const password = passwordRef.current?.value.trim();
+    
         if (!email || !password) {
-            setError("Campos não preenchidos")
-            return
+            setError("Campos não preenchidos");
+            return;
         }
-
+    
         try {
-            const response = await fetch("http://localhost:5000/api/login", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({
-                    email, password
-                })
-            })
-
-            if (response.status === 404) {
-                setError("Usuário não encontrado")
-                return
-            }
-
-            if (response.status === 401) {
-                setError("Senha incorreta.");
-                passwordRef.current!.value = ''
-                return;
-            }
-            if (!response.ok) {
-                setError("Erro inesperado.");
-                clearInputs()
-                return;
-            }
-            const { token } = await response.json()
-            if (!token || typeof token !== 'string') {
-                setError("Erro no servidor")
-            }
-
-            localStorage.setItem("token", token)
-            navigate("/")
-
+            const response = await Api.post("http://localhost:5000/api/login", { email, password });
+    
+            localStorage.setItem("token", response.data.token);
+            navigate("/");
         } catch (err: any) {
-            setError("Erro no servido")
+            setError(err.response?.data?.message || "Erro no servidor");
         }
-
     }
     useEffect(() => {
         if (error) {
@@ -73,8 +38,8 @@ function Login() {
             }, 3000)
             return () => clearTimeout(timeoutId)
         }
-    
-    },[error])
+
+    }, [error])
     return (
         <div className="h-dvh flex items-center justify-center flex-col md:flex-row">
 

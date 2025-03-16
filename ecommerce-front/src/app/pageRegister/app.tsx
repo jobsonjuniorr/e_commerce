@@ -1,11 +1,13 @@
-import { Link } from "react-router"
+import { Link, useNavigate } from "react-router"
 import { useRef,FormEvent,useState,useEffect } from "react"
 import ErrorNotification from "../../components/errroNotification"
 import SuccessNotification from "../../components/sucessNotification"
 import Image from "/assets/login.jpg"
+import Api from "../../services/api.ts"
 
 
 function Register (){
+    const navigate = useNavigate()
     const nameRef = useRef<HTMLInputElement>(null)
     const emailRef = useRef<HTMLInputElement>(null)
     const telefoneRef = useRef<HTMLInputElement>(null)
@@ -35,32 +37,19 @@ function Register (){
         } 
 
         try{
-            const response = await fetch("http://localhost:5000/api/register",{
-                method:"POST",
-                headers:{
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({
+            const response = await Api.post("http://localhost:5000/api/register",{ 
                     nome,email,senha,telefone
-                })
             })
-            const data = await response.json();
-
             if(response.status === 201){
-                setSuccess("Usuário cadastrado com sucesso")
+                setSuccess("Usuário cadastrado com sucesso, redirecionando para Login")
                 clearInputs()
+                setTimeout(()=>{
+                  navigate("/login")
+                },5000)
                 return
             }
-            if(response.status === 409){
-                setError(data.error)
-                clearInputs()
-                return
-            }
-            if(response.status === 500){
-                setError("Erro ao cadastrar o usuário")
-            }
-        }catch(err){
-            setError("Erro ao conectar com o servidor") 
+        }catch(err : any){
+            setError(err.response?.data?.error || "Erro no servidor");
         }
     }
     useEffect(() => {
