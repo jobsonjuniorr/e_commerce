@@ -32,7 +32,6 @@ function Register (){
 
         if(!nome || !telefone || !email || !senha){
             setError("Preencha todos os campos")
-            clearInputs()
             return
         } 
 

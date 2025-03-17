@@ -45,25 +45,10 @@ export const getProducts = async (req, res) => {
     }
 };
 
-export const getProductById = async (req, res) => {
-    try {
-        const { id } = req.params;
-
-        const product = await Product.getProductById(id);
-        if (!product) {
-            return res.status(404).json({ error: "Produto não encontrado" });
-        }
-
-        res.json(product);
-    } catch (error) {
-        console.error("Erro ao buscar produto por ID:", error);
-        res.status(500).json({ error: "Erro ao buscar o produto" });
-    }
-};
 
 export const deleteProduct = async(req,res) =>{
     try{
-        const {id} = req.body
+        const {id} = req.params
 
         if(!id){
             return res.status(404).json({message:"Produto não encontrado"})
@@ -75,3 +60,41 @@ export const deleteProduct = async(req,res) =>{
         res.status(500).json({error:"Erro ao deletar produto"})
     }
 }
+
+export const criarProduto = (req, res) => {
+   try{
+    const { nome, descricao, preco, estoque, categoria } = req.body;
+    const imagem = req.file ? req.file.buffer : null; 
+
+    if(!nome || !descricao || !preco ||!estoque || !categoria || !imagem){
+       return res.status(400).json({message:"Todos os campos precisão ser preenchidos"})
+    }
+
+      const result = Product.inserirProduto(nome, descricao, preco, estoque, categoria, imagem)
+      res.status(201).json({ message: 'Produto inserido com sucesso'});
+
+   }catch(error){
+    console.error(error);
+    res.status(500).json({ error: "Erro ao cadastrar o produto" });
+   }
+  };
+
+  export const updateProductAdm = async (req, res) => {
+    try {
+      const { nome, descricao, preco, estoque, categoria } = req.body;
+      const id = req.params.id; 
+
+   
+      const imagem = req.file ? req.file.buffer : null; 
+      const result = await Product.updateProduct(id, nome, descricao, preco, estoque, categoria, imagem);
+  
+      if (result.affectedRows > 0) {
+        return res.status(200).json({ message: "Produto atualizado com sucesso" });
+      } else {
+        return res.status(404).json({ message: "Produto não encontrado" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erro ao atualizar o produto" });
+    }
+  };
