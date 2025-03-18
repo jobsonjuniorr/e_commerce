@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router";
+import ErrorNotification from "../../components/errroNotification";
+import SuccessNotification from "../../components/sucessNotification";
 
 function App() {
 
@@ -12,8 +14,19 @@ function App() {
     imagem: string; // Base64
   }
   const [produtos, setProdutos] =  useState<Product[]>([]);
-
+  const [user, setUser] = useState<string | null>(null);
+  const [error,setError] = useState<string | null>(null)
+  const [sucess,setSucess] = useState<string | null>(null)
+  
   useEffect(() => {
+    const token = localStorage.getItem("token")
+    const userData = localStorage.getItem("user")
+
+    if(token && userData){
+      const user = JSON.parse(userData)
+      setUser(user.nome)
+    }
+
     fetch("http://localhost:5000/api/protegido/productAdm")
       .then((response) => {
         if (!response.ok) {
@@ -25,8 +38,15 @@ function App() {
       .catch((error) => console.error("Erro ao buscar produtos:", error));
   }, []);
 
+  const handleAddToCart = () =>{
+    if(!user){
+      setError("Você precisa estar logado para adicionar itens ao carrinho.")
+    }
+  }
   return (
     <div>
+      {error && <ErrorNotification message={error} onClose={()=>{setError(null)}}/>}
+      {sucess && <SuccessNotification message={sucess} onClose={()=>{setSucess(null)}}/>}
       <section className="flex w-full items-center justify-between p-3 bg-amber-400">
         <h2>E-comm</h2>
         <div className="bg-red-200 w-md flex items-center justify-center rounded-2xl">
@@ -34,7 +54,10 @@ function App() {
         </div>
         <div>
           <ul className="flex gap-3.5">
-            <li><Link to={"/login"}>Login</Link></li>
+            {user ?(
+              <li>{user}</li>
+            ):(<li><Link to={"/login"}>Login</Link></li>)}
+          
             <li><Link to={"/carrinho"}>Carrinho</Link></li>
           </ul>
         </div>
@@ -54,7 +77,7 @@ function App() {
             <h3 className="text-lg font-bold mt-2">{product.nome}</h3>
             <p className="text-sm text-gray-600">{product.descricao}</p>
             <p className="text-md font-semibold text-green-600">R$ {product.preco}</p>
-            <button className="mt-2 p-2 bg-blue-500 text-white rounded">Adicionar ao Carrinho</button>
+            <button className="mt-2 p-2 bg-blue-500 text-white rounded" onClick={handleAddToCart}>Adicionar ao Carrinho</button>
           </div>
         ))}
       </div>

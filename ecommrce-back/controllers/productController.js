@@ -81,20 +81,21 @@ export const criarProduto = (req, res) => {
 
   export const updateProductAdm = async (req, res) => {
     try {
-      const { nome, descricao, preco, estoque, categoria } = req.body;
-      const id = req.params.id; 
+        const { nome, descricao, preco, estoque, categoria } = req.body;
+        const id = req.params.id;
 
-   
-      const imagem = req.file ? req.file.buffer : null; 
-      const result = await Product.updateProduct(id, nome, descricao, preco, estoque, categoria, imagem);
-  
-      if (result.affectedRows > 0) {
-        return res.status(200).json({ message: "Produto atualizado com sucesso" });
-      } else {
-        return res.status(404).json({ message: "Produto não encontrado" });
-      }
+       
+        const imagem = req.file ? req.file.buffer : undefined;
+
+        const result = await Product.updateProduct(id, nome, descricao, preco, estoque, categoria, imagem);
+
+        if (result.affectedRows > 0) {
+            return res.status(200).json({ message: "Produto atualizado com sucesso" });
+        } else {
+            return res.status(404).json({ message: "Produto não encontrado ou nenhum campo atualizado" });
+        }
     } catch (error) {
-      console.error(error);
-      res.status(500).json({ error: "Erro ao atualizar o produto" });
+        console.error(error);
+        res.status(500).json({ error: "Erro ao atualizar o produto" });
     }
-  };
+};

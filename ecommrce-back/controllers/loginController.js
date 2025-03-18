@@ -21,7 +21,7 @@ export const loginUser = async (req, res) => {
             { expiresIn: "1d" }
         );
 
-        res.status(200).json({ message: "Login bem-sucedido", accessToken });
+        res.status(200).json({ message: "Login bem-sucedido", user,accessToken });
     } catch (error) {
         console.error("Erro no login:", error);
         res.status(500).json({ message: "Erro no servidor" });

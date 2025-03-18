@@ -24,8 +24,9 @@ function Login() {
     
         try {
             const response = await Api.post("http://localhost:5000/api/login", { email, password });
-    
-            localStorage.setItem("token", response.data.token);
+            console.log(response)
+            localStorage.setItem("token", response.data.accessToken);
+            localStorage.setItem("user",JSON.stringify(response.data.user))
             navigate("/");
         } catch (err: any) {
             setError(err.response?.data?.message || "Erro no servidor");

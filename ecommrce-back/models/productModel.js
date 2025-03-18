@@ -65,20 +65,54 @@ const inserirProduto = async(nome, descricao, preco, estoque, categoria, imagem)
 }
 
 const updateProduct = async (id, nome, descricao, preco, estoque, categoria, imagem) => {
-    const connection = await pool.getConnection()
+    const connection = await pool.getConnection();
     try {
-      const query = `
-        UPDATE produtos
-        SET nome = ?, descricao = ?, preco = ?, estoque = ?, categoria = ?, imagem = ?
-        WHERE id = ?
-      `;
-      
-      const result = await connection.execute(query, [nome, descricao, preco, estoque, categoria, imagem, id]);
-      
-      return result;
+        // Criar um array para armazenar os campos a serem atualizados
+        let fields = [];
+        let values = [];
+
+        if (nome) {
+            fields.push("nome = ?");
+            values.push(nome);
+        }
+        if (descricao) {
+            fields.push("descricao = ?");
+            values.push(descricao);
+        }
+        if (preco) {
+            fields.push("preco = ?");
+            values.push(preco);
+        }
+        if (estoque) {
+            fields.push("estoque = ?");
+            values.push(estoque);
+        }
+        if (categoria) {
+            fields.push("categoria = ?");
+            values.push(categoria);
+        }
+        if (imagem) {
+            fields.push("imagem = ?");
+            values.push(imagem);
+        }
+
+        // Se não há nada para atualizar, retorna erro
+        if (fields.length === 0) {
+            return { affectedRows: 0 };
+        }
+
+        // Monta a query dinamicamente
+        const query = `UPDATE produtos SET ${fields.join(", ")} WHERE id = ?`;
+        values.push(id); // Adiciona o ID no final
+
+        const [result] = await connection.execute(query, values);
+        return result;
     } catch (error) {
-      console.error("Erro na atualização do produto:", error);
-      throw new Error("Erro na atualização do produto");
+        console.error("Erro na atualização do produto:", error);
+        throw new Error("Erro na atualização do produto");
+    } finally {
+        connection.release();
     }
-  };
+};
+
 export default { addProduct, getProducts,deleteProduct, inserirProduto, updateProduct};
