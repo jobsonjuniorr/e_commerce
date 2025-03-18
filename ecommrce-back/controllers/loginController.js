@@ -16,12 +16,13 @@ export const loginUser = async (req, res) => {
         }
 
         const accessToken = jwt.sign(
-            { id: user.id, nome: user.nome, email: user.email },
+            { id: user.id, nome: user.nome },
             process.env.JWT_SECRET,
             { expiresIn: "1d" }
         );
-
-        res.status(200).json({ message: "Login bem-sucedido", user,accessToken });
+        
+        const {id,senha, email:_, ...userWithoutPassword} = user
+        res.status(200).json({ message: "Login bem-sucedido", user:userWithoutPassword,accessToken });
     } catch (error) {
         console.error("Erro no login:", error);
         res.status(500).json({ message: "Erro no servidor" });

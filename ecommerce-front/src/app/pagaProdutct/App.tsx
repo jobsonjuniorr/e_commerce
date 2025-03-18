@@ -43,6 +43,7 @@ function App() {
       setError("Você precisa estar logado para adicionar itens ao carrinho.")
     }
   }
+  
   return (
     <div>
       {error && <ErrorNotification message={error} onClose={()=>{setError(null)}}/>}
