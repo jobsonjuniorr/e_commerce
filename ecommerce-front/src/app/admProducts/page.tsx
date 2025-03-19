@@ -3,6 +3,7 @@ import axios from "axios";
 import SuccessNotification from "../../components/sucessNotification";
 import ErrorNotification from "../../components/errroNotification";
 import EditProductPopup from "../../components/popup";
+import {useNavigate } from "react-router";
 
 const ProductAdmin: React.FC = () => {
   const [produtos, setProdutos] = useState<any[]>([]);
@@ -17,9 +18,8 @@ const ProductAdmin: React.FC = () => {
   const [estoque, setEstoque] = useState<number | string>("");
   const [categoria, setCategoria] = useState("blusa");
   const [imagem, setImagem] = useState<File | null>(null);
-
   const fileInputRef = useRef<HTMLInputElement | null>(null);
-
+  const navigate = useNavigate()
   const clearFields = () => {
     setNome("");
     setDescricao("");
@@ -34,7 +34,7 @@ const ProductAdmin: React.FC = () => {
       fileInputRef.current.value = ''
     }
   };
-
+ 
   const loadProducts = async () => {
     try {
       const response = await axios.get("http://localhost:5000/api/protegido/productAdm");
@@ -132,6 +132,18 @@ const ProductAdmin: React.FC = () => {
     }
   },[error,sucess])
 
+
+  useEffect(()=>{
+    const token = localStorage.getItem("token")
+    const dateUser :string = localStorage.getItem("user") || ""
+    const user = dateUser ? JSON.parse(dateUser) : {}
+    
+    if(!token && !dateUser){
+      navigate("/login")
+    }else if(user.tipo === "cliente"){
+      navigate("/")
+    }
+  })
   return (
     <div className="max-w-3xl mx-auto p-6 bg-white shadow-lg rounded-lg">
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}

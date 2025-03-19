@@ -49,7 +49,7 @@ export const getCart = async (req, res) => {
         }
         res.status(200).json({
             message: "Lista do carrinho do usuário",
-            cart: cartItems, 
+            cartItems, 
         });
 
     } catch (error) {

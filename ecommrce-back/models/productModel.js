@@ -115,4 +115,19 @@ const updateProduct = async (id, nome, descricao, preco, estoque, categoria, ima
     }
 };
 
-export default { addProduct, getProducts,deleteProduct, inserirProduto, updateProduct};
+const getProductById = async (produto_id) => {
+    const connection = await pool.getConnection();
+    try {
+        const [result] = await connection.execute(
+            "SELECT * FROM produtos WHERE id = ?",
+            [produto_id]
+        );
+        return result.length ? result[0] : null;
+    } catch (error) {
+        throw error;
+    } finally {
+        connection.release();
+    }
+};
+
+export default { addProduct, getProducts,deleteProduct, inserirProduto, updateProduct, getProductById};

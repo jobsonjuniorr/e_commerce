@@ -24,7 +24,7 @@ function Login() {
     
         try {
             const response = await Api.post("http://localhost:5000/api/login", { email, password });
-            console.log(response)
+          
 
             if(response.data.user.tipo === 'admin'){
                 localStorage.setItem("token", response.data.accessToken);

@@ -21,7 +21,6 @@ export const registerUser = async(req,res) =>{
     }
 }
 
-
 export const registerUserType = async(req,res) =>{
   try{
       const {nome,email,senha,telefone,tipo} =  req.body;

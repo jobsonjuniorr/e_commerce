@@ -14,17 +14,14 @@ protectedRouter.post("/enderecos", authMiddleware, registerAddress);
 
 protectedRouter.get("/productAdm",getProducts)
 protectedRouter.post("/products", authMiddleware, createProduct)
-
-
 protectedRouter.put("/updateProduct/:id",upload.single('imagem'),updateProductAdm)
-
 protectedRouter.delete("/deleteProduct/:id",deleteProduct)
-
 protectedRouter.post("/produtctAdm",upload.single('imagem'),criarProduto)
 
+
 protectedRouter.post("/cart",authMiddleware,cart)
-protectedRouter.get("/listCart",authMiddleware,getCart)
-protectedRouter.delete("/deleteItemCart", authMiddleware,deleteCartOne)
-protectedRouter.delete("/deleteItemAll",authMiddleware, deleteCartAll)
+protectedRouter.get("/cart/list",authMiddleware,getCart)
+protectedRouter.delete("/cart/deleteItemCart", authMiddleware,deleteCartOne)
+protectedRouter.delete("/cart/deleteItemAll",authMiddleware, deleteCartAll)
 
 export default protectedRouter;

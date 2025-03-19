@@ -3,6 +3,7 @@ import Login from "./app/pageLogin/app.tsx"
 import Register from "./app/pageRegister/app.tsx";
 import ProductForm from "./app/admProducts/page.tsx";
 import { BrowserRouter as Router, Routes, Route } from 'react-router';
+import Cart from "./app/pageCart/app.tsx";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
       <Route path="/login" element={<Login/>} />
       <Route path="/register" element={<Register/>} />
       <Route path="/productAdm" element={<ProductForm/>}/>
+      <Route path="/cart" element={<Cart/>} />
     </Routes>
   </Router>
   )
