@@ -6,7 +6,7 @@ dotenv.config();
 export const authMiddleware = (req, res, next) => {
     try {
         const authHeader = req.header("Authorization")?.trim();
-        
+    
         if (!authHeader || !authHeader.startsWith("Bearer ")) {
             return res.status(401).json({ error: "Acesso negado! Token não fornecido." });
         }

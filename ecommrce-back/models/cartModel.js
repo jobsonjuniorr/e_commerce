@@ -7,7 +7,7 @@ const addCart = async (usuario_id, produto_id, quantidade, preco) => {
         const precoNumerico = parseFloat(preco)
 
         const [result] = await connection.execute("INSERT INTO carrinho (usuario_id,produto_id,quantidade,preco) VALUES (?,?,?,?)", [usuario_id, produto_id, quantidade, precoNumerico])
-        console.log("Item adicionado ao carrinho com ID:", result.insertId);
+       
         return {
             id: result.insertId,
             usuario_id,
@@ -69,6 +69,17 @@ const deleteAll = async (usuario_id) =>{
         connection.release()
     }
 }
+const attCart = async(id,quantidade,preco) =>{
+    const connection = await pool.getConnection()
+    try{
+        const [result] = await connection.execute("UPDATE carrinho SET quantidade = ?, preco = ? WHERE id = ?", [quantidade,preco, id])
+        return result
 
+    }catch(error){
+        throw error
+    }finally{
+        connection.release()
+    }
+}
 
-export default { addCart, getCart,deleteCartOne,deleteAll }
+export default { addCart, getCart,deleteCartOne,deleteAll,attCart }

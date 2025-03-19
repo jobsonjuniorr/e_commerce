@@ -71,6 +71,43 @@ function Cart() {
     }
   };
 
+  const handleUpdateQuantity = async (id: number, quantidade: number, preco: number) => {
+    const token = localStorage.getItem("token");
+
+    if (!token) {
+      setError("Você precisa estar logado para atualizar o carrinho.");
+      return;
+    }
+
+    const precoTotal = preco * quantidade; 
+
+    try {
+      const response = await fetch("http://localhost:5000/api/protegido/cart/attItem", {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ id, quantidade, preco: precoTotal }), 
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro ao atualizar a quantidade.");
+      }
+ 
+      setCartItems((prevItems) =>
+        prevItems.map((item) =>
+          item.id === id ? { ...item, quantidade,  precoTotal } : item
+        )
+      );
+    } catch (error: any) {
+      setError(error.message || "Erro ao atualizar a quantidade.");
+    }
+};
+
+
   const handleClearCart = async () => {
     const token = localStorage.getItem("token");
     const usuario_id = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : null;
@@ -98,20 +135,20 @@ function Cart() {
     }
   };
 
-  useEffect(()=>{
-    if(error){
-        const timeError = setTimeout(()=>{
-            setError(null)
-        },3000)
-        return ()=>{clearTimeout(timeError)}
+  useEffect(() => {
+    if (error) {
+      const timeError = setTimeout(() => {
+        setError(null)
+      }, 3000)
+      return () => { clearTimeout(timeError) }
     }
-    if(sucess){
-        const timeSucess = setTimeout(()=>{
+    if (sucess) {
+      const timeSucess = setTimeout(() => {
         setSucess(null)
-        },3000)
-        return ()=>{clearTimeout(timeSucess)}
+      }, 3000)
+      return () => { clearTimeout(timeSucess) }
     }
-  },[error,sucess])
+  }, [error, sucess])
   return (
     <div>
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
@@ -130,7 +167,19 @@ function Cart() {
                   <div className="flex-1">
                     <h3 className="text-lg font-bold">{item.nome}</h3>
                     <p className="text-sm text-gray-600">{item.descricao}</p>
-                    <p className="text-md font-semibold text-green-600">R$ {item.preco} x {item.quantidade}</p>
+                    <p className="text-md font-semibold text-green-600">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
+                    <div className="flex items-center gap-2">
+                      <button
+                        onClick={() => handleUpdateQuantity(item.id, item.quantidade - 1, item.preco)}
+                        disabled={item.quantidade <= 1}
+                      >
+                        -
+                      </button>
+                      <span>{item.quantidade}</span>
+                      <button onClick={() => handleUpdateQuantity(item.id, item.quantidade + 1, item.preco)}>
+                        +
+                      </button>
+                    </div>
                   </div>
                   <button
                     className="p-2 bg-red-500 text-white rounded"

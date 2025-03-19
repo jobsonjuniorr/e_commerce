@@ -109,6 +109,28 @@ export const deleteCartAll = async(req,res) =>{
             error: "Erro interno do servidor", 
             details: error.message 
         });
-
     }
 }
+
+export const attCart = async (req, res) => {
+    const { id, quantidade,preco } = req.body;
+    try {
+        if (!id || quantidade < 1 || !preco) {
+            return res.status(400).json({ error: "ID do item e nova quantidade são obrigatórios." });
+        }
+    
+        try {
+            await Cart.attCart(id,quantidade,preco)
+            res.json({ success: "Quantidade atualizada com sucesso!" });
+        } catch (error) {
+            console.error("Erro ao atualizar quantidade:", error);
+            res.status(500).json({ error: "Erro interno ao atualizar quantidade." });
+        }
+
+    } catch (error) {
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
+    }
+};
