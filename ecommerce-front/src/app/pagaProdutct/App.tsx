@@ -10,13 +10,14 @@ function App() {
     descricao: string;
     preco: number;
     categoria: string;
-    imagem: string; // Base64
+    imagem: string;
   }
 
   const [produtos, setProdutos] = useState<Product[]>([]);
   const [user, setUser] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sucess, setSucess] = useState<string | null>(null);
+  const [searchTerm, setSearchTerm] = useState("");
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -41,14 +42,14 @@ function App() {
   const handleAddToCart = async (produto_id: number) => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
-  
+
     if (!userData) {
       setError("Você precisa estar logado para adicionar itens ao carrinho.");
       return;
     }
-  
-    const usuario_id = JSON.parse(userData).id; // Pegando o ID do usuário logado
-  
+
+    const usuario_id = JSON.parse(userData).id;
+
     try {
 
       const checkResponse = await fetch(
@@ -60,14 +61,14 @@ function App() {
           },
         }
       );
-  
+
       const checkData = await checkResponse.json();
-  
+
       if (checkResponse.ok && checkData.getItem.length > 0) {
         setError("Este item já está no seu carrinho.");
         return;
       }
-  
+
       const addResponse = await fetch("http://localhost:5000/api/protegido/cart", {
         method: "POST",
         headers: {
@@ -76,33 +77,40 @@ function App() {
         },
         body: JSON.stringify({ usuario_id, produto_id }),
       });
-  
+
       const addData = await addResponse.json();
-  
+
       if (!addResponse.ok) {
         throw new Error(addData.error || "Erro ao adicionar ao carrinho.");
       }
-  
+
       setSucess("Produto adicionado ao carrinho com sucesso!");
     } catch (error: any) {
       setError(error.message || "Erro ao adicionar ao carrinho.");
     }
   };
+
+  const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setSearchTerm(event.target.value);
+  };
+  const filteredProducts = produtos.filter((product) =>
+    product.nome.toLowerCase().includes(searchTerm.toLowerCase())
+  );
   
-  useEffect(()=>{
-    if(error){
-      const timeError = setTimeout(()=>{
+  useEffect(() => {
+    if (error) {
+      const timeError = setTimeout(() => {
         setError(null)
-      },3000)
-      return ()=>{clearTimeout(timeError)}
+      }, 3000)
+      return () => { clearTimeout(timeError) }
     }
-    if(sucess){
-      const timeSucess = setTimeout(()=>{
+    if (sucess) {
+      const timeSucess = setTimeout(() => {
         setSucess(null)
-      },3000)
-      return ()=>{clearTimeout(timeSucess)}
-     }
-  },[error,sucess])
+      }, 3000)
+      return () => { clearTimeout(timeSucess) }
+    }
+  }, [error, sucess])
 
   return (
     <div>
@@ -112,12 +120,19 @@ function App() {
       <section className="flex w-full items-center justify-between p-3 bg-amber-400">
         <h2>E-comm</h2>
         <div className="bg-red-200 w-md flex items-center justify-center rounded-2xl">
-          <input className="p-2 focus:outline-none w-full" type="text" placeholder="Buscar" />
+          <input
+            className="p-2 focus:outline-none w-full"
+            type="text"
+            placeholder="Buscar"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+
         </div>
         <div>
           <ul className="flex gap-3.5">
             {user ? (
-              <li>{user}</li>
+              <li><Link to={"config"}>{user}</Link></li>
             ) : (
               <li>
                 <Link to={"/login"}>Login</Link>
@@ -130,9 +145,8 @@ function App() {
         </div>
       </section>
 
-      {/* Exibição dos produtos */}
       <div className="grid grid-cols-3 gap-4 p-5">
-        {produtos.map((product) => (
+        {filteredProducts.map((product) => (
           <div key={product.id} className="border p-3 rounded-lg shadow-md">
             <img
               src={product.imagem}
@@ -150,6 +164,7 @@ function App() {
             </button>
           </div>
         ))}
+
       </div>
     </div>
   );

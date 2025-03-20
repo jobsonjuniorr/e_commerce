@@ -86,7 +86,6 @@ export const deleteCartOne = async(req,res) =>{
     try{
         const {id} = req.body
 
-        console.log(id)
 
         if(!id){
           return res.status(401).json({ error: "Item não encontrado" });
