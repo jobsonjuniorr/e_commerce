@@ -40,33 +40,55 @@ function App() {
 
   const handleAddToCart = async (produto_id: number) => {
     const token = localStorage.getItem("token");
-
-    if (!user) {
+    const userData = localStorage.getItem("user");
+  
+    if (!userData) {
       setError("Você precisa estar logado para adicionar itens ao carrinho.");
       return;
     }
-
+  
+    const usuario_id = JSON.parse(userData).id; // Pegando o ID do usuário logado
+  
     try {
-      const response = await fetch("http://localhost:5000/api/protegido/cart", {
+
+      const checkResponse = await fetch(
+        `http://localhost:5000/api/protegido/cart/verificCart?usuario_id=${usuario_id}&produto_id=${produto_id}`,
+        {
+          method: "GET",
+          headers: {
+            "Authorization": `Bearer ${token}`,
+          },
+        }
+      );
+  
+      const checkData = await checkResponse.json();
+  
+      if (checkResponse.ok && checkData.getItem.length > 0) {
+        setError("Este item já está no seu carrinho.");
+        return;
+      }
+  
+      const addResponse = await fetch("http://localhost:5000/api/protegido/cart", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
+          "Authorization": `Bearer ${token}`,
         },
-        body: JSON.stringify({ produto_id }),
+        body: JSON.stringify({ usuario_id, produto_id }),
       });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Erro ao adicionar ao carrinho.");
+  
+      const addData = await addResponse.json();
+  
+      if (!addResponse.ok) {
+        throw new Error(addData.error || "Erro ao adicionar ao carrinho.");
       }
-
+  
       setSucess("Produto adicionado ao carrinho com sucesso!");
     } catch (error: any) {
       setError(error.message || "Erro ao adicionar ao carrinho.");
     }
   };
+  
   useEffect(()=>{
     if(error){
       const timeError = setTimeout(()=>{

@@ -60,7 +60,27 @@ export const getCart = async (req, res) => {
         });
     }
 };
+export const getCartOne =  async (req,res) =>{
+    try{
+        const {usuario_id ,produto_id} = req.query
+    
+        if(!usuario_id || !produto_id){
+            return res.status(401).json({ error: "Nenhum valor passado" });
+        }
 
+        const getItem = await Cart.getCarOne(usuario_id, produto_id);
+        res.status(200).json({
+            message: getItem.length > 0 ? "Item encontrado" : "Item não encontrado",
+            getItem
+        });
+    }catch(error){
+        console.error("Erro ao listar o carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
+    }
+}
 
 export const deleteCartOne = async(req,res) =>{
     try{

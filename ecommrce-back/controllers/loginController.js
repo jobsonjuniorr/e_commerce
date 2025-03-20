@@ -21,7 +21,7 @@ export const loginUser = async (req, res) => {
             { expiresIn: "1d" }
         );
         
-        const {id,senha, email:_, ...userWithoutPassword} = user
+        const {senha, email:_, ...userWithoutPassword} = user
         res.status(200).json({ message: "Login bem-sucedido", user:userWithoutPassword,accessToken });
     } catch (error) {
         console.error("Erro no login:", error);

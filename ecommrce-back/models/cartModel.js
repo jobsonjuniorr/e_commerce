@@ -44,6 +44,17 @@ const getCart = async (usuario_id) => {
       connection.release();
     }
   };
+const getCarOne = async(usuario_id, produto_id) =>{
+    const connection = await pool.getConnection()
+    try{
+        const [rows] = await connection.execute("SELECT * FROM carrinho WHERE usuario_id = ? AND produto_id = ?",[usuario_id,produto_id])
+        return rows
+    }catch(error){
+        throw error
+    }finally{
+        connection.release()
+    }
+}
 
 const deleteCartOne = async (id) => {
     const connection = await pool.getConnection()
@@ -82,4 +93,4 @@ const attCart = async(id,quantidade,preco) =>{
     }
 }
 
-export default { addCart, getCart,deleteCartOne,deleteAll,attCart }
+export default { addCart, getCart,deleteCartOne,deleteAll,attCart,getCarOne}
