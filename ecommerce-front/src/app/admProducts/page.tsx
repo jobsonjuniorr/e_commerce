@@ -36,8 +36,13 @@ const ProductAdmin: React.FC = () => {
   };
  
   const loadProducts = async () => {
+    const token = localStorage.getItem("token")
     try {
-      const response = await axios.get("http://localhost:5000/api/protegido/productAdm");
+      const response = await axios.get("http://localhost:5000/api/protegido/productAdm",{
+        headers: {
+          Authorization:  `Bearer ${token}`,
+        },
+      });
       setProdutos(response.data);
     } catch (error) {
       setError("Erro ao carregar produtos");
@@ -68,12 +73,14 @@ const ProductAdmin: React.FC = () => {
     if (imagem) formData.append("imagem", imagem);
 
     try {
+      const token = localStorage.getItem("token")
       const response = await axios.post(
         "http://localhost:5000/api/protegido/produtctAdm",
         formData,
         {
           headers: {
             "Content-Type": "multipart/form-data",
+            Authorization:  `Bearer ${token}`,
           },
         }
       );
@@ -103,8 +110,15 @@ const ProductAdmin: React.FC = () => {
 
 
   const deleteProduct = async (id: number) => {
+    const token = localStorage.getItem("token");
+
     try {
-      await axios.delete(`http://localhost:5000/api/protegido/deleteProduct/${id}`);
+      await axios.delete(`http://localhost:5000/api/protegido/deleteProduct/${id}`,{
+        headers: {
+          "Content-Type": "multipart/form-data",
+          Authorization:  `Bearer ${token}`,
+        },
+      });
       setSucess("Produto excluído com sucesso");
       loadProducts();
     } catch (error) {
@@ -259,7 +273,6 @@ const ProductAdmin: React.FC = () => {
           product={selectedProduct}
           onClose={() => setIsEditPopupOpen(false)}
           onUpdate={(updatedProduct) => {
-            console.log("Produto atualizado:", updatedProduct);
             updateProduct(updatedProduct);
           }}
         />

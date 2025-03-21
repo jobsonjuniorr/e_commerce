@@ -12,11 +12,11 @@ const protectedRouter = express.Router();
 
 protectedRouter.post("/enderecos", authMiddleware, registerAddress);  
 
-protectedRouter.get("/productAdm",getProducts)
+protectedRouter.get("/productAdm",authMiddleware,getProducts)
 protectedRouter.post("/products", authMiddleware, createProduct)
 protectedRouter.put("/updateProduct/:id",upload.single('imagem'),updateProductAdm)
-protectedRouter.delete("/deleteProduct/:id",deleteProduct)
-protectedRouter.post("/produtctAdm",upload.single('imagem'),criarProduto)
+protectedRouter.delete("/deleteProduct/:id",authMiddleware,deleteProduct)
+protectedRouter.post("/produtctAdm",authMiddleware,upload.single('imagem'),criarProduto)
 
 
 protectedRouter.post("/cart",authMiddleware,cart)

@@ -27,8 +27,7 @@ export const authMiddleware = (req, res, next) => {
         next();
 
     } catch (error) {
-        console.error("Erro ao verificar token:", error.message);
-
+      
         if (error.name === "TokenExpiredError") {
             return res.status(401).json({ error: "Sessão expirada, faça login novamente." });
         }
