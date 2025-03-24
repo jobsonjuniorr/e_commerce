@@ -16,5 +16,16 @@ const postAddress = async (usuario_id, rua, numero, complemento, bairro, cidade,
         connection.release();
     }
 }
+const getAddress = async(usuario_id) =>{
+    const connection = await pool.getConnection()
+    try{
+        const [result] = await connection.execute("SELECT * FROM enderecos WHERE usuario_id = ?", [usuario_id])
+        return result
+    }catch(error){
+        throw error
+    }finally{
+        connection.release()
+    }
+}
 
-export default { postAddress };
+export default { postAddress,getAddress };

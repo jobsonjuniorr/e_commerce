@@ -17,3 +17,17 @@ export const registerAddress = async (req, res) => {
         res.status(500).json({ error: "Erro ao tentar cadastrar o endereço." });
     }
 };
+
+export const getAddress = async(req,res) =>{
+    try{
+        const {usuario_id} = req.body
+  
+        const getItem = await Address.getAddress(usuario_id)
+      
+        res.status(200).json({
+            getItem
+        });
+    }catch(error){
+        res.status(500).json({ error: "Erro ao tentar exibir o endereço." });
+    }
+}

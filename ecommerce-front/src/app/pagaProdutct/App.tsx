@@ -8,6 +8,7 @@ function App() {
     id: number;
     nome: string;
     descricao: string;
+    estoque:number;
     preco: number;
     categoria: string;
     imagem: string;
@@ -38,7 +39,7 @@ function App() {
       .then((data) => setProdutos(data))
       .catch((error) => console.error("Erro ao buscar produtos:", error));
   }, []);
-
+ 
   const handleAddToCart = async (produto_id: number) => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -97,6 +98,7 @@ function App() {
     product.nome.toLowerCase().includes(searchTerm.toLowerCase())
   );
   
+
   useEffect(() => {
     if (error) {
       const timeError = setTimeout(() => {
@@ -155,13 +157,15 @@ function App() {
             />
             <h3 className="text-lg font-bold mt-2">{product.nome}</h3>
             <p className="text-sm text-gray-600">{product.descricao}</p>
+            <p className="text-sm text-gray-600">Estoque: {product.estoque <= 0 ? `Indisponivel` : product.estoque}</p>
             <p className="text-md font-semibold text-green-600">R$ {product.preco}</p>
             <button
-              className="mt-2 p-2 bg-blue-500 text-white rounded"
+              className={`mt-2 p-2 rounded ${product.estoque <= 0 ? 'bg-gray-400 cursor-not-allowed' :'bg-blue-500 hover:bg-blue-600 text-white'}`}
               onClick={() => handleAddToCart(product.id)}
+              disabled = {product.estoque <=0}
             >
-              Adicionar ao Carrinho
-            </button>
+              Adicionar ao carrinho
+            </button> 
           </div>
         ))}
 

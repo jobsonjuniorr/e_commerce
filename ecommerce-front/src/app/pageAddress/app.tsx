@@ -22,7 +22,7 @@ interface Product {
   imagem: string;
 }
 
-function Cart() {
+function Address() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [sucess, setSucess] = useState<string | null>(null);
@@ -151,34 +151,6 @@ function Cart() {
   };
 
 
-
-  const handleClearCart = async () => {
-    const token = localStorage.getItem("token");
-    const usuario_id = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : null;
-
-    try {
-      const response = await fetch("http://localhost:5000/api/protegido/cart/deleteAll", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ usuario_id }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Erro ao limpar o carrinho.");
-      }
-
-      setCartItems([]);
-      setSucess("Todos os itens foram removidos do carrinho!");
-    } catch (error: any) {
-      setError(error.message || "Erro ao limpar o carrinho.");
-    }
-  };
-
   useEffect(() => {
     if (error) {
       const timeError = setTimeout(() => {
@@ -199,36 +171,18 @@ function Cart() {
       {sucess && <SuccessNotification message={sucess} onClose={() => setSucess(null)} />}
 
       <section className="p-5">
-        <h2 className="text-2xl font-bold mb-4">Carrinho de Compras</h2>
-        {cartItems.length === 0 ? (
-          <p className="text-gray-500">Seu carrinho está vazio.</p>
-        ) : (
-          <>
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+     
+            <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
               {cartItems.map((item) => (
-                <div key={item.id} className="border p-3 rounded-lg shadow-md flex items-center gap-4">
+                <div key={item.id} className="border p-3 rounded-lg shadow-md flex items-center gap-4 w-2/6">
                   <img src={item.imagem} alt={item.nome} className="w-24 h-24 object-cover rounded-lg" />
                   <div className="flex-1">
                     <h3 className="text-lg font-bold">{item.nome}</h3>
-                    <p className="text-sm text-gray-600">{item.descricao}</p>
-                    <p className="text-md font-semibold text-green-600">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
+                
                     <div className="flex items-center gap-2">
-                      <button
-                        className="p-2 rounded bg-blue-500 text-white"
-                        onClick={() => handleUpdateQuantity(item.id, item.quantidade - 1, item.preco)}
-                        disabled={item.quantidade <= 1}
-                      >
-                        -
-                      </button>
                       <span>{item.quantidade}</span>
-                      <button
-                        onClick={() => handleUpdateQuantity(item.id, item.quantidade + 1, item.preco)}
-                        disabled={item.quantidade >= (produtos.find((p) => p.id === item.produto_id)?.estoque || 0)}
-                        className={`p-2 rounded ${item.quantidade >= (produtos.find((p) => p.id === item.produto_id)?.estoque || 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white'}`}
-                      >
-                        +
-                      </button>
                     </div>
+                    <p className="text-md font-semibold text-green-600">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
                   </div>
                   <button
                     className="p-2 bg-red-500 text-white rounded"
@@ -240,20 +194,11 @@ function Cart() {
               ))}
             </div>
            <div className="flex gap-2">
-           <button
-              className="mt-4 p-3 bg-red-600 text-white rounded"
-              onClick={handleClearCart}
-            >
-              Limpar Carrinho
-            </button>
-            <Link to={"/address"}><button className="mt-4 p-3 bg-blue-500 text-white rounded">Área de pagamento</button></Link>
            </div>
-          </>
-        )}
       </section>
 
-      <Link to="/" className="block text-center mt-5 text-blue-500 ">
-        Voltar para a loja
+      <Link to="/cart" className="block text-center mt-5 text-blue-500 ">
+        Voltar para o carrinho
       </Link>
       
    
@@ -261,4 +206,4 @@ function Cart() {
   );
 }
 
-export default Cart;
+export default Address;
