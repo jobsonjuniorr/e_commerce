@@ -20,7 +20,11 @@ export const registerAddress = async (req, res) => {
 
 export const getAddress = async(req,res) =>{
     try{
-        const {usuario_id} = req.body
+        const usuario_id = req.usuario.id
+
+        if (!usuario_id) {
+            return res.status(401).json({ error: "Usuário não autenticado." });
+        }
   
         const getItem = await Address.getAddress(usuario_id)
       
@@ -28,6 +32,10 @@ export const getAddress = async(req,res) =>{
             getItem
         });
     }catch(error){
-        res.status(500).json({ error: "Erro ao tentar exibir o endereço." });
+        console.error("Erro ao listar o carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
     }
 }

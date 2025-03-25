@@ -11,7 +11,7 @@ const upload = multer({storage:storage})
 const protectedRouter = express.Router();
 
 protectedRouter.post("/enderecos", authMiddleware, registerAddress);
-protectedRouter.get("/enderecos/visualizacao", getAddress)  
+protectedRouter.get("/enderecos/visualizacao",authMiddleware, getAddress)  
 
 protectedRouter.get("/productAdm",getProducts)
 protectedRouter.post("/products", authMiddleware, createProduct)
