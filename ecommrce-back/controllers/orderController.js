@@ -4,7 +4,7 @@ import Order from "../models/orderModel.js"
 export const orderItens = async(req,res)=>{
     try{
         const {usuario_id,total,status,endereco_id} = req.body
-        console.log(req.body)
+  
         if(!usuario_id || !endereco_id || !total || !status){
             return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos" });
         }

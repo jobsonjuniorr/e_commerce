@@ -5,6 +5,8 @@ import { createProduct,deleteProduct,criarProduto,getProducts, updateProductAdm 
 import { cart,getCart,deleteCartOne,deleteCartAll, attCart, getCartOne } from "../controllers/cartController.js";
 import multer from "multer";
 import { orderItens } from "../controllers/orderController.js";
+import { itemsOrder } from "../controllers/itemsorderController.js";
+import { paymetRegister } from "../controllers/paymet.js";
 
 const storage = multer.memoryStorage()
 const upload = multer({storage:storage})
@@ -29,5 +31,8 @@ protectedRouter.delete("/cart/deleteItemAll",authMiddleware, deleteCartAll)
 protectedRouter.put("/cart/attItem",authMiddleware,attCart)
 
 protectedRouter.post("/order",authMiddleware,orderItens)
+protectedRouter.post("/itemsOrder",authMiddleware,itemsOrder)
+
+protectedRouter.post("/paymet",authMiddleware,paymetRegister)
 
 export default protectedRouter;
