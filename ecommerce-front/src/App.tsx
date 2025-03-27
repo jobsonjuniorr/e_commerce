@@ -6,6 +6,7 @@ import { BrowserRouter as Router, Routes, Route } from 'react-router';
 import Cart from "./app/pageCart/app.tsx";
 import Config from "./app/confpage/app.tsx";
 import Address from "./app/pageAddress/app.tsx";
+import Paymet from "./app/pagePaymet/app.tsx";
 
 function App() {
   return (
@@ -19,6 +20,7 @@ function App() {
       <Route path="/cart" element={<Cart/>} />
       <Route path="/config" element={<Config/>} />
       <Route path="/address" element={<Address/>} />
+      <Route path="/paymet" element={<Paymet/>}/>
     </Routes>
   </Router>
   )

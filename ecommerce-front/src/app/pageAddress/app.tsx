@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router";
+import { Link, useNavigate } from "react-router";
 import ErrorNotification from "../../components/errroNotification";
 import SuccessNotification from "../../components/sucessNotification";
 import AddressForm from "../../components/formsAddress";
@@ -42,10 +42,9 @@ function Address() {
   const [produtos, setProdutos] = useState<Product[]>([]);
   const [user, setUser] = useState<string | null>(null);
 
-
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
   const [show, setShow] = useState(false)
-
+  const navigate = useNavigate()
   const fetchAddresses = () => {
     const token = localStorage.getItem("token");
 
@@ -58,14 +57,6 @@ function Address() {
   }
 
   useEffect(() => {
-    const token = localStorage.getItem("token");
-    const userData = localStorage.getItem("user");
-
-    if (token && userData) {
-      const user = JSON.parse(userData);
-      setUser(user.nome);
-    }
-
     fetch("http://localhost:5000/api/protegido/productAdm")
       .then((response) => {
         if (!response.ok) {
@@ -123,22 +114,46 @@ function Address() {
       if (!response.ok) {
         throw new Error(data.error || "Erro ao remover o item.");
       }
-
       setCartItems(cartItems.filter((item) => item.id !== id));
       setSucess("Item removido do carrinho com sucesso!");
     } catch (error: any) {
       setError(error.message || "Erro ao remover item do carrinho.");
     }
   };
+  useEffect(()=>{
+    const token = localStorage.getItem("token");
+    const userData = localStorage.getItem("user");
 
+    if (token && userData) {
+      const user = JSON.parse(userData);
+      setUser(user.id);
+    }
+
+  },[])
   const handleAddressSelect = (id: number) => {
     setSelectedAddress(id);
   };
-  const handleConfirmAddress = () => {
+  const handleConfirmAddress = async () => {
+
+    const total = cartItems.reduce((acc,item)=> acc + (item.preco * item.quantidade),0)
+    const token = localStorage.getItem("token");
+
     if (!selectedAddress) return;
 
-    localStorage.setItem("selectedAddress", selectedAddress.toString());
-    alert("Endereço selecionado com sucesso!");
+    try {
+      const response = await fetch("http://localhost:5000/api/protegido/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ usuario_id:user ,total, status:"pendente", endereco_id:selectedAddress}),
+      });
+
+      navigate("/paymet")
+    } catch (error: any) {
+      setError(error.message || "Erro ao remover item do carrinho.");
+    }
   };
 
   useEffect(() => {
@@ -221,22 +236,29 @@ function Address() {
             </div>
           )}
         </div>
+        <div className="flex gap-3">
 
-        <button
-          className={`mt-5 p-3 bg-blue-500 text-white rounded ${selectedAddress ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
-            }`}
-          onClick={handleConfirmAddress}
-          disabled={!selectedAddress}
-        >
-          Confirmar Endereço
-        </button>
+          <button
+            className={`mt-5 p-3 bg-blue-500 text-white rounded ${selectedAddress ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
+              }`}
+            onClick={handleConfirmAddress}
+            disabled={!selectedAddress}
+          >
+            Confirmar Endereço
+          </button>
+          <button onClick={() => setShow(!show)} className="bg-green-500 text-white p-3 rounded mt-5">
+            {show ? "Fechar Formulário" : "Adicionar Novo Endereço"}
+
+          </button>
+        </div>
+
+        {show && <AddressForm onAddAddress={fetchAddresses} />}
       </div>
+
 
       <Link to="/cart" className="block text-center mt-5 text-blue-500 ">
         Voltar para o carrinho
       </Link>
-
-
     </div>
   );
 }

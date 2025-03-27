@@ -45,7 +45,7 @@ function Cart() {
       .then((response) => response.json())
       .then((data) => {
         if (data.cartItems) {
-          console.log(data)
+       
           setCartItems(data.cartItems);
         } else {
           setCartItems([]);

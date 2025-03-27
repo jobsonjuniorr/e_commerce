@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import ErrorNotification from "../../components/errroNotification";
 import SuccessNotification from "../../components/sucessNotification";
-
+import { useNavigate } from "react-router";
 function App() {
   interface Product {
     id: number;
@@ -19,7 +19,7 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [sucess, setSucess] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
-
+  const navigate = useNavigate()
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -84,10 +84,15 @@ function App() {
       if (!addResponse.ok) {
         throw new Error(addData.error || "Erro ao adicionar ao carrinho.");
       }
-
       setSucess("Produto adicionado ao carrinho com sucesso!");
     } catch (error: any) {
-      setError(error.message || "Erro ao adicionar ao carrinho.");
+      if(error.message === "Sessão expirada, faça login novamente."){
+        setError("Sessão expirada, faça login novamente.")
+        localStorage.clear()
+        navigate("/login")
+      }else{
+        setError(error.message || "Erro ao adicionar ao carrinho.");
+      }
     }
   };
 
