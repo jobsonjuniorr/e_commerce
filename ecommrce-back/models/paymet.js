@@ -15,4 +15,6 @@ const requestingPayment = async(pedido_id,metodo_pagamento,status)=>{
 }
 
 
+  
+
 export default {requestingPayment}

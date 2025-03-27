@@ -16,3 +16,19 @@ export const orderItens = async(req,res)=>{
     }
     
 }
+export const getOrderItens = async (req, res) => {
+    try {
+        const usuario_id = req.usuario.id;
+
+        if (!usuario_id) {
+            return res.status(400).json({ error: "Usuário não encontrado." });
+        }
+
+        const result = await Order.getOrderItens(usuario_id);
+
+        res.status(200).json({ result });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro ao buscar itens do pedido." });
+    }
+};

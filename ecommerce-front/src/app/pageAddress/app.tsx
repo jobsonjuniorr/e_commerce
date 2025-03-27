@@ -13,15 +13,7 @@ interface CartItem {
   quantidade: number;
   imagem: string;
 }
-interface Product {
-  id: number;
-  nome: string;
-  descricao: string;
-  estoque: number;
-  preco: number;
-  categoria: string;
-  imagem: string;
-}
+
 interface Address {
   id: number;
   usuario_id: number;
@@ -39,7 +31,7 @@ function Address() {
   const [address, setAddress] = useState<Address[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [sucess, setSucess] = useState<string | null>(null);
-  const [produtos, setProdutos] = useState<Product[]>([]);
+
   const [user, setUser] = useState<string | null>(null);
 
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
@@ -56,17 +48,6 @@ function Address() {
       .catch(() => console.error("Erro ao carregar os endereços."));
   }
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/protegido/productAdm")
-      .then((response) => {
-        if (!response.ok) {
-          throw new Error(`Erro ${response.status}: ${response.statusText}`);
-        }
-        return response.json();
-      })
-      .then((data) => setProdutos(data))
-      .catch((error) => console.error("Erro ao buscar produtos:", error));
-  }, []);
 
   useEffect(() => {
     const token = localStorage.getItem("token");

@@ -39,3 +39,23 @@ export const getAddress = async(req,res) =>{
         });
     }
 }
+export const getIdAddres = async(req,res)=>{
+    try{
+        const {id} = req.body
+ 
+        if(!id){
+            return res.status(401).json({ error: "Nenhum valor passado" });
+        }
+        const getItem = await Address.getIdAddres(id)
+        res.status(200).json({
+            getItem
+        })
+    
+    }catch(error){
+        console.error("Erro ao listar o carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
+    }
+}

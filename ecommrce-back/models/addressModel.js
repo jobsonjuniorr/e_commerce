@@ -28,4 +28,17 @@ const getAddress = async(usuario_id) =>{
     }
 }
 
-export default { postAddress,getAddress };
+
+const getIdAddres = async(id) =>{
+    const connection = await pool.getConnection()
+    try{
+        const [result] = await connection.execute("SELECT * FROM enderecos WHERE id = ?",[id])
+        return result
+    }catch(error){
+        throw error
+    }finally{
+        connection.release()
+    }
+}
+
+export default { postAddress,getAddress,getIdAddres };

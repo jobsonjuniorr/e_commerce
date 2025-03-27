@@ -1,10 +1,10 @@
 import express from "express";
-import { getAddress, registerAddress } from "../controllers/addressController.js";
+import { getAddress, getIdAddres, registerAddress } from "../controllers/addressController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { createProduct,deleteProduct,criarProduto,getProducts, updateProductAdm } from "../controllers/productController.js";
 import { cart,getCart,deleteCartOne,deleteCartAll, attCart, getCartOne } from "../controllers/cartController.js";
 import multer from "multer";
-import { orderItens } from "../controllers/orderController.js";
+import { getOrderItens, orderItens } from "../controllers/orderController.js";
 import { itemsOrder } from "../controllers/itemsorderController.js";
 import { paymetRegister } from "../controllers/paymet.js";
 
@@ -15,6 +15,7 @@ const protectedRouter = express.Router();
 
 protectedRouter.post("/enderecos", authMiddleware, registerAddress);
 protectedRouter.get("/enderecos/visualizacao",authMiddleware, getAddress)  
+protectedRouter.post("/enderecos/paymet",authMiddleware,getIdAddres)
 
 protectedRouter.get("/productAdm",getProducts)
 protectedRouter.post("/products", authMiddleware, createProduct)
@@ -32,7 +33,8 @@ protectedRouter.put("/cart/attItem",authMiddleware,attCart)
 
 protectedRouter.post("/order",authMiddleware,orderItens)
 protectedRouter.post("/itemsOrder",authMiddleware,itemsOrder)
+protectedRouter.get("/order/getItem",authMiddleware,getOrderItens)
 
-protectedRouter.post("/paymet",authMiddleware,paymetRegister)
+protectedRouter.post("/paymet/register",authMiddleware,paymetRegister)
 
 export default protectedRouter;
