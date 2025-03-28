@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import ErrorNotification from "../../components/errroNotification";
 import SuccessNotification from "../../components/sucessNotification";
 import { useNavigate } from "react-router";
+
 function App() {
   interface Product {
     id: number;
@@ -13,13 +14,53 @@ function App() {
     categoria: string;
     imagem: string;
   }
-
+  interface CartItem {
+    id: number;
+    produto_id: number;
+    nome: string;
+    descricao: string;
+    preco: number;
+    quantidade: number;
+    imagem: string;
+  }
   const [produtos, setProdutos] = useState<Product[]>([]);
   const [user, setUser] = useState<string | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [sucess, setSucess] = useState<string | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
+  const [cartItems, setCartItems] = useState<CartItem[]>([]);
+
   const navigate = useNavigate()
+
+
+   
+  const fetchCart = () => {
+    const token = localStorage.getItem("token");
+  
+    if (!token) {
+      setError("Você precisa estar logado para acessar o carrinho.");
+      return;
+    }
+  
+    fetch("http://localhost:5000/api/protegido/cart/list", {
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        setCartItems(data.cartItems || []);
+      })
+      .catch((error) => {
+        console.error("Erro ao buscar o carrinho:", error);
+        setError("Erro ao carregar o carrinho.");
+      });
+  };
+  
+  useEffect(() => {
+    fetchCart();
+  }, []);
+
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -40,6 +81,7 @@ function App() {
       .catch((error) => console.error("Erro ao buscar produtos:", error));
   }, []);
  
+
   const handleAddToCart = async (produto_id: number) => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -85,6 +127,7 @@ function App() {
         throw new Error(addData.error || "Erro ao adicionar ao carrinho.");
       }
       setSucess("Produto adicionado ao carrinho com sucesso!");
+      fetchCart()
     } catch (error: any) {
       if(error.message === "Sessão expirada, faça login novamente."){
         setError("Sessão expirada, faça login novamente.")
@@ -94,6 +137,9 @@ function App() {
         setError(error.message || "Erro ao adicionar ao carrinho.");
       }
     }
+
+
+    
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,6 +164,7 @@ function App() {
       return () => { clearTimeout(timeSucess) }
     }
   }, [error, sucess])
+ 
 
   return (
     <div>
@@ -146,7 +193,9 @@ function App() {
               </li>
             )}
             <li>
-              <Link to={"/cart"}>Carrinho</Link>
+             {cartItems.length > 0  ?(
+               <Link to={"/cart"}>carrinho-{cartItems.length}</Link>
+             ): <Link to={"/cart"}>carrinho</Link>}
             </li>
           </ul>
         </div>

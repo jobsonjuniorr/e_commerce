@@ -152,7 +152,6 @@ function Cart() {
   };
 
 
-
   const handleClearCart = async () => {
     const token = localStorage.getItem("token");
     const usuario_id = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : null;
