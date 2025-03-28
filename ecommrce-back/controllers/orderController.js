@@ -1,21 +1,31 @@
 import Order from "../models/orderModel.js"
 
 
-export const orderItens = async(req,res)=>{
-    try{
-        const {usuario_id,total,status,endereco_id} = req.body
-  
-        if(!usuario_id || !endereco_id || !total || !status){
+export const orderItens = async (req, res) => {
+    try {
+        const { usuario_id, total, status, endereco_id } = req.body;
+
+        if (!usuario_id || !endereco_id || !total || !status) {
             return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos" });
         }
-        const result = Order.orderItens(usuario_id,total,status,endereco_id)
-        res.status(201).json({ message: 'Pedido realizado com sucesso'});
-    }catch(error){
-        console.error(error);
+
+        const result = await Order.orderItens(usuario_id, total, status, endereco_id);
+
+        if (!result || !result.insertId) {
+            return res.status(500).json({ error: "Erro ao registrar pedido, ID não encontrado" });
+        }
+      
+        res.status(201).json({ 
+            message: 'Pedido realizado com sucesso',
+            id: result.insertId  
+        });
+
+    } catch (error) {
+        console.error("Erro no backend:", error);
         res.status(500).json({ error: "Erro ao registrar pedido" });
     }
-    
-}
+};
+
 export const getOrderItens = async (req, res) => {
     try {
         const usuario_id = req.usuario.id;

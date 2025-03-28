@@ -158,7 +158,7 @@ function Cart() {
     const usuario_id = localStorage.getItem("user") ? JSON.parse(localStorage.getItem("user")!).id : null;
 
     try {
-      const response = await fetch("http://localhost:5000/api/protegido/cart/deleteAll", {
+      const response = await fetch("http://localhost:5000/api/protegido/cart/deleteItemAll", {
         method: "DELETE",
         headers: {
           "Content-Type": "application/json",

@@ -25,15 +25,22 @@ interface Address {
   estado: string;
   cep: string;
 }
+interface Order {
+  id: number;
+  usuario_id: number;
+  total: number;
+  status: string;
+  endereco_id: number;
+}
 
 function Address() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
   const [address, setAddress] = useState<Address[]>([]);
   const [error, setError] = useState<string | null>(null);
   const [sucess, setSucess] = useState<string | null>(null);
-
+  const [metodoPagamento, setMetodoPagamento] = useState<string>("pix");
   const [user, setUser] = useState<string | null>(null);
-
+  const [order, setOrder] = useState<Order[]>([]);
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
   const [show, setShow] = useState(false)
   const navigate = useNavigate()
@@ -101,7 +108,7 @@ function Address() {
       setError(error.message || "Erro ao remover item do carrinho.");
     }
   };
-  useEffect(()=>{
+  useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
 
@@ -110,13 +117,13 @@ function Address() {
       setUser(user.id);
     }
 
-  },[])
+  }, [])
   const handleAddressSelect = (id: number) => {
     setSelectedAddress(id);
   };
   const handleConfirmAddress = async () => {
 
-    const total = cartItems.reduce((acc,item)=> acc + (item.preco * item.quantidade),0)
+    const total = cartItems.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
     const token = localStorage.getItem("token");
 
     if (!selectedAddress) return;
@@ -128,7 +135,7 @@ function Address() {
           "Content-Type": "application/json",
           Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify({ usuario_id:user ,total, status:"pendente", endereco_id:selectedAddress}),
+        body: JSON.stringify({ usuario_id: user, total, status: "pendente", endereco_id: selectedAddress }),
       });
 
       navigate("/paymet")
@@ -140,6 +147,97 @@ function Address() {
   useEffect(() => {
     fetchAddresses();
   }, []);
+
+  const handlePayment = async () => {
+    const total = cartItems.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
+    const token = localStorage.getItem("token");
+  
+    if (!selectedAddress) return;
+  
+    try {
+  
+      const orderResponse = await fetch("http://localhost:5000/api/protegido/order", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          usuario_id: user,
+          total,
+          status: "pendente",
+          endereco_id: selectedAddress,
+        }),
+      });
+  
+      const orderData = await orderResponse.json();
+  
+      if (!orderResponse.ok) {
+        throw new Error(orderData.error || "Erro ao criar o pedido.");
+      }
+      console.log(orderData)
+      const pedido_id = orderData.id; 
+      console.log("Pedido criado com ID:", pedido_id);
+
+      const paymentResponse = await fetch("http://localhost:5000/api/protegido/paymet/register", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({
+          pedido_id,
+          metodo_pagamento: metodoPagamento,
+          status: "aprovado",
+        }),
+      });
+  
+      const paymentData = await paymentResponse.json();
+  
+      if (!paymentResponse.ok) {
+        throw new Error(paymentData.error || "Erro ao processar pagamento.");
+      }
+  
+      setSucess("Pagamento realizado com sucesso!");
+      await clearCart();
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+  
+
+  const clearCart = async () => {
+    const token = localStorage.getItem("token");
+
+    if (!user) {
+      setError("Usuário não autenticado.");
+      return;
+    }
+
+    try {
+      const response = await fetch("http://localhost:5000/api/protegido/cart/deleteItemAll", {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ usuario_id: user }),
+      });
+
+      const data = await response.json();
+
+      if (!response.ok) {
+        throw new Error(data.error || "Erro ao limpar o carrinho.");
+      }
+
+      setCartItems([]);
+      setTimeout(() => navigate("/"), 3000);
+    } catch (error: any) {
+      setError(error.message);
+    }
+  };
+
+
 
   useEffect(() => {
     if (error) {
@@ -235,6 +333,26 @@ function Address() {
 
         {show && <AddressForm onAddAddress={fetchAddresses} />}
       </div>
+
+      <div className="p-5">
+        <h2 className="text-lg font-bold">Escolha o Método de Pagamento</h2>
+        <select
+          className="border p-2 rounded w-full md:w-1/3"
+          value={metodoPagamento}
+          onChange={(e) => setMetodoPagamento(e.target.value)}
+        >
+          <option value="pix">Pix</option>
+          <option value="cartao_credito">Cartão de Crédito</option>
+          <option value="boleto">Boleto</option>
+        </select>
+      </div>
+
+      <button
+        onClick={handlePayment}
+        className="bg-blue-500 text-white p-2 rounded mt-4 w-full md:w-1/3"
+      >
+        Confirmar Pagamento
+      </button>
 
 
       <Link to="/cart" className="block text-center mt-5 text-blue-500 ">
