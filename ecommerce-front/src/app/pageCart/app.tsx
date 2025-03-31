@@ -33,7 +33,6 @@ function Cart() {
     const token = localStorage.getItem("token");
 
     if (!token) {
-      setError("Você precisa estar logado para acessar o carrinho.");
       return;
     }
 

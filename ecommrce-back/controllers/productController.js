@@ -99,3 +99,39 @@ export const criarProduto = (req, res) => {
         res.status(500).json({ error: "Erro ao atualizar o produto" });
     }
 };
+
+
+export const subtritionStockProduct = async (req, res) => {
+    try {
+        const { id, quantidade } = req.body;
+        console.log(req.body)
+        console.log(id,quantidade)
+        
+        if (!id || !quantidade) {
+            return res.status(400).json({ error: "Todos os campos precisam ser preenchidos" });
+        }
+
+        const product = await Product.getProductById(id); 
+
+        if (!product) {
+            return res.status(404).json({ error: "Produto não encontrado" });
+        }
+
+        const novoEstoque = product.estoque - quantidade;
+
+        if (novoEstoque < 0) {
+            return res.status(400).json({ error: "Estoque insuficiente para a venda" });
+        }
+
+        const result = await Product.subProduct(id, novoEstoque);
+
+        if (result.affectedRows > 0) {
+            return res.status(200).json({ message: "Estoque atualizado com sucesso" });
+        } else {
+            return res.status(500).json({ error: "Erro ao atualizar o estoque" });
+        }
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ error: "Erro interno no servidor" });
+    }
+};

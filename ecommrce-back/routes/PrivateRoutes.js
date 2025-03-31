@@ -1,7 +1,7 @@
 import express from "express";
 import { getAddress, getIdAddres, registerAddress } from "../controllers/addressController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
-import { createProduct,deleteProduct,criarProduto,getProducts, updateProductAdm } from "../controllers/productController.js";
+import { createProduct,deleteProduct,criarProduto,getProducts, updateProductAdm, subtritionStockProduct } from "../controllers/productController.js";
 import { cart,getCart,deleteCartOne,deleteCartAll, attCart, getCartOne } from "../controllers/cartController.js";
 import multer from "multer";
 import { getOrderItens, orderItens } from "../controllers/orderController.js";
@@ -22,7 +22,7 @@ protectedRouter.post("/products", authMiddleware, createProduct)
 protectedRouter.put("/updateProduct/:id",upload.single('imagem'),updateProductAdm)
 protectedRouter.delete("/deleteProduct/:id",authMiddleware,deleteProduct)
 protectedRouter.post("/produtctAdm",authMiddleware,upload.single('imagem'),criarProduto)
-
+protectedRouter.put("/subtritionStock",authMiddleware,subtritionStockProduct)
 
 protectedRouter.post("/cart",authMiddleware,cart)
 protectedRouter.get("/cart/list",authMiddleware,getCart)

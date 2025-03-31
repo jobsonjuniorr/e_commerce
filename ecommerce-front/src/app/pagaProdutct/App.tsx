@@ -32,8 +32,6 @@ function App() {
 
   const navigate = useNavigate()
 
-
-   
   const fetchCart = () => {
     const token = localStorage.getItem("token");
   
@@ -58,7 +56,10 @@ function App() {
   };
   
   useEffect(() => {
-    fetchCart();
+    const token = localStorage.getItem("token");
+    if (token) {
+      fetchCart();
+    }
   }, []);
 
   useEffect(() => {
@@ -138,8 +139,6 @@ function App() {
       }
     }
 
-
-    
   };
 
   const handleSearchChange = (event: React.ChangeEvent<HTMLInputElement>) => {

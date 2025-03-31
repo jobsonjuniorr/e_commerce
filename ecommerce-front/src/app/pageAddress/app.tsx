@@ -25,13 +25,7 @@ interface Address {
   estado: string;
   cep: string;
 }
-interface Order {
-  id: number;
-  usuario_id: number;
-  total: number;
-  status: string;
-  endereco_id: number;
-}
+
 
 function Address() {
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
@@ -40,7 +34,7 @@ function Address() {
   const [sucess, setSucess] = useState<string | null>(null);
   const [metodoPagamento, setMetodoPagamento] = useState<string>("pix");
   const [user, setUser] = useState<string | null>(null);
-  const [order, setOrder] = useState<Order[]>([]);
+
   const [selectedAddress, setSelectedAddress] = useState<number | null>(null);
   const [show, setShow] = useState(false)
   const navigate = useNavigate()
@@ -72,6 +66,7 @@ function Address() {
       .then((response) => response.json())
       .then((data) => {
         if (data.cartItems) {
+          console.log(data.cartItems)
           setCartItems(data.cartItems);
         } else {
           setCartItems([]);
@@ -84,30 +79,7 @@ function Address() {
   }, []);
 
 
-  const handleRemoveItem = async (id: number) => {
-    const token = localStorage.getItem("token");
 
-    try {
-      const response = await fetch("http://localhost:5000/api/protegido/cart/deleteItemCart", {
-        method: "DELETE",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ id }),
-      });
-
-      const data = await response.json();
-
-      if (!response.ok) {
-        throw new Error(data.error || "Erro ao remover o item.");
-      }
-      setCartItems(cartItems.filter((item) => item.id !== id));
-      setSucess("Item removido do carrinho com sucesso!");
-    } catch (error: any) {
-      setError(error.message || "Erro ao remover item do carrinho.");
-    }
-  };
   useEffect(() => {
     const token = localStorage.getItem("token");
     const userData = localStorage.getItem("user");
@@ -121,41 +93,19 @@ function Address() {
   const handleAddressSelect = (id: number) => {
     setSelectedAddress(id);
   };
-  const handleConfirmAddress = async () => {
-
-    const total = cartItems.reduce((acc, item) => acc + (item.preco * item.quantidade), 0)
-    const token = localStorage.getItem("token");
-
-    if (!selectedAddress) return;
-
-    try {
-      const response = await fetch("http://localhost:5000/api/protegido/order", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${token}`,
-        },
-        body: JSON.stringify({ usuario_id: user, total, status: "pendente", endereco_id: selectedAddress }),
-      });
-
-      navigate("/paymet")
-    } catch (error: any) {
-      setError(error.message || "Erro ao remover item do carrinho.");
-    }
-  };
 
   useEffect(() => {
     fetchAddresses();
   }, []);
 
+
   const handlePayment = async () => {
     const total = cartItems.reduce((acc, item) => acc + (item.preco * item.quantidade), 0);
     const token = localStorage.getItem("token");
-  
+
     if (!selectedAddress) return;
-  
+
     try {
-  
       const orderResponse = await fetch("http://localhost:5000/api/protegido/order", {
         method: "POST",
         headers: {
@@ -169,15 +119,14 @@ function Address() {
           endereco_id: selectedAddress,
         }),
       });
-  
+
       const orderData = await orderResponse.json();
-  
+
       if (!orderResponse.ok) {
         throw new Error(orderData.error || "Erro ao criar o pedido.");
       }
-      console.log(orderData)
-      const pedido_id = orderData.id; 
-      console.log("Pedido criado com ID:", pedido_id);
+
+      const pedido_id = orderData.id;
 
       const paymentResponse = await fetch("http://localhost:5000/api/protegido/paymet/register", {
         method: "POST",
@@ -191,20 +140,40 @@ function Address() {
           status: "aprovado",
         }),
       });
-  
+
       const paymentData = await paymentResponse.json();
-  
+
       if (!paymentResponse.ok) {
         throw new Error(paymentData.error || "Erro ao processar pagamento.");
       }
-  
+
+      for (const item of cartItems) {
+        const subStockResponse = await fetch("http://localhost:5000/api/protegido/subtritionStock", {
+          method: "PUT",
+          headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            id: item.produto_id,
+            quantidade: item.quantidade
+          }),
+        });
+
+        const subStockData = await subStockResponse.json();
+
+        if (!subStockResponse.ok) {
+          throw new Error(subStockData.error || "Erro ao tentar atualizar estoque");
+        }
+      }
+
       setSucess("Pagamento realizado com sucesso!");
       await clearCart();
     } catch (error: any) {
       setError(error.message);
     }
   };
-  
+
 
   const clearCart = async () => {
     const token = localStorage.getItem("token");
@@ -271,12 +240,6 @@ function Address() {
                 </div>
                 <p className="text-md font-semibold text-green-600">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
               </div>
-              <button
-                className="p-2 bg-red-500 text-white rounded"
-                onClick={() => handleRemoveItem(item.id)}
-              >
-                Remover
-              </button>
             </div>
           ))}
         </div>
@@ -317,14 +280,6 @@ function Address() {
         </div>
         <div className="flex gap-3">
 
-          <button
-            className={`mt-5 p-3 bg-blue-500 text-white rounded ${selectedAddress ? "cursor-pointer" : "opacity-50 cursor-not-allowed"
-              }`}
-            onClick={handleConfirmAddress}
-            disabled={!selectedAddress}
-          >
-            Confirmar Endereço
-          </button>
           <button onClick={() => setShow(!show)} className="bg-green-500 text-white p-3 rounded mt-5">
             {show ? "Fechar Formulário" : "Adicionar Novo Endereço"}
 
