@@ -166,7 +166,7 @@ function App() {
  
 
   return (
-    <div>
+    <div className="bg-background">
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
       {sucess && <SuccessNotification message={sucess} onClose={() => setSucess(null)} />}
 
@@ -213,7 +213,7 @@ function App() {
             <p className="text-sm text-gray-600">Estoque: {product.estoque <= 0 ? `Indisponivel` : product.estoque}</p>
             <p className="text-md font-semibold text-green-600">R$ {product.preco}</p>
             <button
-              className={`mt-2 p-2 rounded ${product.estoque <= 0 ? 'bg-gray-400 cursor-not-allowed' :'bg-blue-500 hover:bg-blue-600 text-white'}`}
+              className={`mt-2 p-2 rounded ${product.estoque <= 0 ? 'bg-gray-400 cursor-not-allowed' :'bg-button hover:bg-button-hover text-text-button'}`}
               onClick={() => handleAddToCart(product.id)}
               disabled = {product.estoque <=0}
             >
