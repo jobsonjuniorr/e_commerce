@@ -66,7 +66,6 @@ function Address() {
       .then((response) => response.json())
       .then((data) => {
         if (data.cartItems) {
-          console.log(data.cartItems)
           setCartItems(data.cartItems);
         } else {
           setCartItems([]);

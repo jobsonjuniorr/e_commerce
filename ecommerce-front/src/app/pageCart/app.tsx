@@ -198,32 +198,31 @@ function Cart() {
       {sucess && <SuccessNotification message={sucess} onClose={() => setSucess(null)} />}
 
       <section className="p-5">
-        <h2 className="text-2xl font-bold mb-4">Carrinho de Compras</h2>
+        <h2 className="text-2xl font-bold mb-4 text-headline">Carrinho de Compras</h2>
         {cartItems.length === 0 ? (
           <p className="text-gray-500">Seu carrinho está vazio.</p>
         ) : (
           <>
             <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
               {cartItems.map((item) => (
-                <div key={item.id} className="border p-3 rounded-lg shadow-md flex items-center gap-4">
+                <div key={item.id} className="bg-card  p-3 rounded-lg shadow-md flex items-center gap-4">
                   <img src={item.imagem} alt={item.nome} className="w-24 h-24 object-cover rounded-lg" />
                   <div className="flex-1">
-                    <h3 className="text-lg font-bold">{item.nome}</h3>
-                    <p className="text-sm text-gray-600">{item.descricao}</p>
+                    <h3 className="text-lg font-bold text-paragraph-white">{item.nome}</h3>
                     <p className="text-md font-semibold text-green-600">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
                     <div className="flex items-center gap-2">
                       <button
-                        className="p-2 rounded bg-blue-500 text-white"
+                        className="p-2 text-md rounded bg-new-button hover:bg-button-hover text-white cursor-pointer"
                         onClick={() => handleUpdateQuantity(item.id, item.quantidade - 1, item.preco)}
                         disabled={item.quantidade <= 1}
                       >
                         -
                       </button>
-                      <span>{item.quantidade}</span>
+                      <span className="text-alert-stock font-bold text-lg">{item.quantidade}</span>
                       <button
                         onClick={() => handleUpdateQuantity(item.id, item.quantidade + 1, item.preco)}
                         disabled={item.quantidade >= (produtos.find((p) => p.id === item.produto_id)?.estoque || 0)}
-                        className={`p-2 rounded ${item.quantidade >= (produtos.find((p) => p.id === item.produto_id)?.estoque || 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-blue-500 text-white'}`}
+                        className={`p-2 rounded cursor-pointer text-md ${item.quantidade >= (produtos.find((p) => p.id === item.produto_id)?.estoque || 0) ? 'bg-gray-400 cursor-not-allowed' : 'bg-new-button text-white hover:bg-button-hover'}`}
                       >
                         +
                       </button>
@@ -240,18 +239,18 @@ function Cart() {
             </div>
            <div className="flex gap-2">
            <button
-              className="mt-4 p-3 bg-red-600 text-white rounded"
+              className="mt-4 p-3 bg-red-500 text-white rounded"
               onClick={handleClearCart}
             >
               Limpar Carrinho
             </button>
-            <Link to={"/address"}><button className="mt-4 p-3 bg-blue-500 text-white rounded">Área de pagamento</button></Link>
+            <Link to={"/address"}><button className="mt-4 p-3 bg-new-button text-white rounded">Área de pagamento</button></Link>
            </div>
           </>
         )}
       </section>
 
-      <Link to="/" className="block text-center mt-5 text-blue-500 ">
+      <Link to="/" className="block text-center mt-5 text-alert-stock ">
         Voltar para a loja
       </Link>
       

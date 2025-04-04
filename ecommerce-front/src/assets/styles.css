@@ -2,21 +2,23 @@
 
 @theme{
     --primary: oklch(0.75 0.25 30); 
-    --color-background: #0f0e17; 
-    --color-card:#0f0e1796;
+    --color-background:  #222222; 
+    --color-card: #0f0e17;
     --color-headline: oklch(1 0 0); 
     --color-paragraph: oklch(0.85 0.02 20); 
     --color-new-button: #ff4500; 
     --color-text-button: #ffffff; 
     --color-button-hover: #ff5722;
-    --color-header: #ff0000; 
+    --color-header: #ff4500; 
     --color-inputs: #222222; 
     --color-alert-stock: #ffcc00; 
+    --color-paragraph-white:#f4f4f4;
+    --color-white-border:#fff;
 }
 html, body {
     height: 100%;
     @apply bg-background;
 }
 :root {
-    --primary: oklch(#0f0e1796);
+    --primary: oklch(#f4f4f4);
 }

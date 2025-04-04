@@ -170,8 +170,9 @@ function App() {
       {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
       {sucess && <SuccessNotification message={sucess} onClose={() => setSucess(null)} />}
 
-      <section className="flex w-full items-center justify-between p-3 bg-header">
-        <h2 className="text-headline text-lg">E-comm</h2>
+      <section className="flex w-full items-center justify-between p-3.5 bg-header gap-2 md:gap-0">
+        <h2 className="text-headline text-lg  hidden md:block">E-comm</h2>
+
         <div className="bg-inputs text-paragraph w-md flex items-center justify-center rounded-2xl">
           <input
             className="p-2 focus:outline-none w-full"
@@ -183,7 +184,7 @@ function App() {
 
         </div>
         <div>
-          <ul className="flex gap-3.5">
+          <ul className="flex gap-3.5 sm:p-1 md:p-0 ">
             {user ? (
               <li className="text-headline text-lg hover:underline"><Link to={"config"}>{user}</Link></li>
             ) : (
@@ -191,18 +192,26 @@ function App() {
                 <Link to={"/login"}>Login</Link>
               </li>
             )}
-            <li className="text-headline text-lg hover:underline">
+            <li className="text-headline text-lg hover:underline ">
              {cartItems.length > 0  ?(
-               <Link  to={"/cart"}>carrinho-{cartItems.length}</Link>
-             ): <Link to={"/cart"}>carrinho</Link>}
+               <Link  to={"/cart"} className="flex items-center justify-center">
+              <span className="material-symbols-outlined ">
+               shopping_cart
+               </span>
+              <span className="absolute mb-8 ml-6 text-headline font-bold"> {cartItems.length}
+              </span>
+               </Link>
+             ): <Link to={"/cart"}><span className="material-symbols-outlined">
+             shopping_cart
+             </span></Link>}
             </li>
           </ul>
         </div>
       </section>
 
-      <div className="grid md:grid-cols-3 sm:grid-cols-1 gap-4 p-5">
+      <div className="grid md:grid-cols-5 sm:grid-cols-1 gap-2 p-5">
         {filteredProducts.map((product) => (
-          <div key={product.id} className="border p-3 rounded-lg shadow-md bg-card">
+          <div key={product.id} className="border md:w-64 p-3 rounded-lg shadow-md bg-card">
             <img
               src={product.imagem}
               alt={product.nome}
@@ -210,7 +219,7 @@ function App() {
             />
             <h3 className="text-lg font-bold mt-2 text-headline">{product.nome}</h3>
             <p className="text-sm text-paragraph">{product.descricao}</p>
-            <p className="text-sm text-headline flex gap-1.5 ">Estoque: <p className="text-sm text-alert-stock"> {product.estoque <= 0 ? `Indisponivel` : product.estoque}</p></p>
+            <p className="text-sm text-headline flex gap-1.5 ">Estoque: <strong className="text-sm text-alert-stock"> {product.estoque <= 0 ? `Indisponivel` : product.estoque}</strong></p>
             <p className="text-md font-semibold text-green-600">R$ {product.preco}</p>
             <button
               className={`mt-2 p-2 rounded ${product.estoque <= 0 ? 'bg-gray-400 cursor-not-allowed' :'bg-new-button hover:bg-button-hover text-text-button'}`}
