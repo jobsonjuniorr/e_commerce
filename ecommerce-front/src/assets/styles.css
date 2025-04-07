@@ -14,6 +14,7 @@
     --color-alert-stock: #ffcc00; 
     --color-paragraph-white:#f4f4f4;
     --color-white-border:#fff;
+    --color-borde-orange:#ff4500;
 }
 html, body {
     height: 100%;

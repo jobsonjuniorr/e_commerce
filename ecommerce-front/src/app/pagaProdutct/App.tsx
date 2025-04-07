@@ -217,10 +217,10 @@ function App() {
               alt={product.nome}
               className="w-full h-64 object-contain rounded-xl"
             />
-            <h3 className="text-lg font-bold mt-2 text-headline">{product.nome}</h3>
-            <p className="text-sm text-paragraph">{product.descricao}</p>
+            <h3 className="text-lg font-bold mt-2 text-headline capitalize">{product.nome}</h3>
+            <p className="text-sm text-paragraph capitalize">{product.descricao}</p>
             <p className="text-sm text-headline flex gap-1.5 ">Estoque: <strong className="text-sm text-alert-stock"> {product.estoque <= 0 ? `Indisponivel` : product.estoque}</strong></p>
-            <p className="text-md font-semibold text-green-600">R$ {product.preco}</p>
+            <p className="text-base font-semibold text-green-600">R$ {product.preco}</p>
             <button
               className={`mt-2 p-2 rounded ${product.estoque <= 0 ? 'bg-gray-400 cursor-not-allowed' :'bg-new-button hover:bg-button-hover text-text-button'}`}
               onClick={() => handleAddToCart(product.id)}

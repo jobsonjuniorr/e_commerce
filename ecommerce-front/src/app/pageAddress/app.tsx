@@ -65,7 +65,7 @@ function Address() {
     })
       .then((response) => response.json())
       .then((data) => {
-        if (data.cartItems) {
+        if (data.cartItems) { 
           setCartItems(data.cartItems);
         } else {
           setCartItems([]);
@@ -227,15 +227,15 @@ function Address() {
       {sucess && <SuccessNotification message={sucess} onClose={() => setSucess(null)} />}
 
       <section className="p-5">
-        <div className="grid grid-cols-1 md:grid-cols-1 gap-4">
+        <div className="grid grid-cols-1 md:grid-cols-1 gap-4 ">
           {cartItems.map((item) => (
-            <div key={item.id} className="border p-3 rounded-lg shadow-md flex items-center gap-4 w-2/6">
+            <div key={item.id} className="border p-3 rounded-lg shadow-md flex items-center gap-4 w-2/6 bg-card">
               <img src={item.imagem} alt={item.nome} className="w-24 h-24 object-cover rounded-lg" />
               <div className="flex-1">
-                <h3 className="text-lg font-bold">{item.nome}</h3>
+                <h3 className="text-lg font-bold text-headline capitalize">{item.nome}</h3>
 
                 <div className="flex items-center gap-2">
-                  <span>{item.quantidade}</span>
+                  <span className="text-paragraph-white  text-base flex">Quantidade:<p className="text-alert-stock ml-0.5 font-bold text-base">{item.quantidade}</p></span>
                 </div>
                 <p className="text-md font-semibold text-green-600">R$ {(item.preco * item.quantidade).toFixed(2)}</p>
               </div>
@@ -245,17 +245,17 @@ function Address() {
         <div className="flex gap-2">
         </div>
       </section>
-      <div>
-        <h2 className="text-lg font-bold">Selecione um endereço:</h2>
-        <div className="p-5">
+      <div className="p-3">
+        <h2 className="text-lg font-bold text-headline">Selecione um endereço:</h2>
+        <div className="p-1">
           {address.length === 0 ? (
             <p>Você ainda não tem endereços cadastrados.</p>
           ) : (
-            <div className="grid grid-cols-1 gap-4">
+            <div className="grid grid-cols-1 gap-4 ">
               {address.map((item) => (
                 <label
                   key={item.id}
-                  className={`border p-3 rounded-lg shadow-md flex items-center gap-4 cursor-pointer ${selectedAddress === item.id ? "border-blue-500" : ""
+                  className={`border p-3 rounded-lg shadow-md flex items-center gap-4 cursor-pointer bg-card ${selectedAddress === item.id ? "border-borde-orange" : ""
                     }`}
                 >
                   <input
@@ -265,12 +265,12 @@ function Address() {
                     checked={selectedAddress === item.id}
                     onChange={() => handleAddressSelect(item.id)}
                   />
-                  <div>
-                    <h3 className="text-lg font-bold">
+                  <div className="">
+                    <h3 className="text-lg font-bold text-paragraph-white">
                       {item.rua}, {item.numero}
                     </h3>
-                    <p>{item.bairro} - {item.cidade}/{item.estado}</p>
-                    <p>CEP: {item.cep}</p>
+                    <p className="text-paragraph-white text-base">{item.bairro} - {item.cidade}/{item.estado}</p>
+                    <p className="text-paragraph text-base">CEP: {item.cep}</p>
                   </div>
                 </label>
               ))}
@@ -279,7 +279,7 @@ function Address() {
         </div>
         <div className="flex gap-3">
 
-          <button onClick={() => setShow(!show)} className="bg-green-500 text-white p-3 rounded mt-5">
+          <button onClick={() => setShow(!show)} className="bg-new-button w-2xs text-text-button text-base font-semibold p-3 rounded mt-5">
             {show ? "Fechar Formulário" : "Adicionar Novo Endereço"}
 
           </button>
@@ -288,28 +288,27 @@ function Address() {
         {show && <AddressForm onAddAddress={fetchAddresses} />}
       </div>
 
-      <div className="p-5">
-        <h2 className="text-lg font-bold">Escolha o Método de Pagamento</h2>
+      <div className="p-3 flex flex-col">
+        <h2 className="text-lg font-bold text-headline">Escolha o Método de Pagamento</h2>
         <select
-          className="border p-2 rounded w-full md:w-1/3"
+          className="border border-white-border text-paragraph-white p-2 rounded w-full md:w-1/3"
           value={metodoPagamento}
           onChange={(e) => setMetodoPagamento(e.target.value)}
         >
-          <option value="pix">Pix</option>
-          <option value="cartao_credito">Cartão de Crédito</option>
-          <option value="boleto">Boleto</option>
+          <option className="text-black" value="pix">Pix</option>
+          <option className="text-black" value="cartao_credito">Cartão de Crédito</option>
+          <option className="text-black" value="boleto">Boleto</option>
         </select>
-      </div>
 
-      <button
+        <button
         onClick={handlePayment}
-        className="bg-blue-500 text-white p-2 rounded mt-4 w-full md:w-1/3"
+        className="bg-new-button text-white p-2 rounded mt-4 w-full md:w-2xs"
       >
         Confirmar Pagamento
       </button>
+      </div>
 
-
-      <Link to="/cart" className="block text-center mt-5 text-blue-500 ">
+      <Link to="/cart" className="block text-center mt-2 text-alert-stock ">
         Voltar para o carrinho
       </Link>
     </div>

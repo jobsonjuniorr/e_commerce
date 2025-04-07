@@ -49,17 +49,22 @@ function AddressForm({ onAddAddress }: { onAddAddress: () => void }) {
   };
 
   return (
-    <form onSubmit={handleSubmit} className="p-4 border rounded-md shadow-md mt-4">
+    <form onSubmit={handleSubmit} className="p-4 border rounded-md shadow-md mt-4 bg-card">
       {error && <p className="text-red-500">{error}</p>}
-      <input type="text" value={rua} onChange={(e) => setRua(e.target.value)} placeholder="Rua" required />
-      <input type="text" value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="Número" required />
-      <input type="text" value={complemento} onChange={(e) => setComplemento(e.target.value)} placeholder="Complemento" />
-      <input type="text" value={bairro} onChange={(e) => setBairro(e.target.value)} placeholder="Bairro" required />
-      <input type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="Cidade" required />
-      <input type="text" value={estado} onChange={(e) => setEstado(e.target.value)} placeholder="Estado" required />
-      <input type="text" value={cep} onChange={(e) => setCep(e.target.value)} placeholder="CEP" required />
+      <div className="flex gap-1.5 w-full p-1">
+        <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={rua} onChange={(e) => setRua(e.target.value)} placeholder="Rua" required />
+        <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={numero} onChange={(e) => setNumero(e.target.value)} placeholder="Número" required />
+        <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={complemento} onChange={(e) => setComplemento(e.target.value)} placeholder="Complemento" />
+        <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={bairro} onChange={(e) => setBairro(e.target.value)} placeholder="Bairro" required />
+        <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={cidade} onChange={(e) => setCidade(e.target.value)} placeholder="Cidade" required />
+      </div>
+      <div className="flex gap-1 mt-1.5 mb-1.5 p-1">
+        
+      <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={estado} onChange={(e) => setEstado(e.target.value)} placeholder="Estado" required />
+      <input className="text-paragraph-white focus:outline-none border p-1 rounded-sm" type="text" value={cep} onChange={(e) => setCep(e.target.value)} placeholder="CEP" required />
+      </div>
 
-      <button type="submit" className="bg-blue-500 text-white p-2 rounded mt-2">
+      <button type="submit" className="bg-new-button text-white p-2 rounded mt-2">
         Adicionar Endereço
       </button>
     </form>
