@@ -1,8 +1,9 @@
-function SuccessNotification({ message, onClose }: { message: string; onClose: () => void }) {
+function SuccessNotification({ message}: { message: string; onClose: () => void }) {
   return (
-    <div className="z-40 fixed top-4 bg-green-500 text-white px-4 py-2 rounded shadow-lg">
-      <p>{message}</p>
-      <button onClick={onClose} className="mt-2 underline text-white">Fechar</button>
+    <div className="z-40 fixed top-4 w-full flex flex-col items-end">
+      <div className="bg-green-500 w-2/5 z-40 px-4 py-2  rounded  shadow-lg  ">
+      <p className="text-headline font-bold">{message}</p>
+      </div>
     </div>
   );
 }

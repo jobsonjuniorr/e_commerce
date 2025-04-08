@@ -54,6 +54,16 @@ function App() {
         setError("Erro ao carregar o carrinho.");
       });
   };
+  const logout = () =>{
+    const token = localStorage.getItem("token");
+    if(!token){
+      navigate("/login")
+      return;
+    }else{
+      localStorage.clear()
+      navigate("login")  
+    }
+  }
   
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -61,6 +71,7 @@ function App() {
       fetchCart();
     }
   }, []);
+
 
   useEffect(() => {
     const token = localStorage.getItem("token");
@@ -171,19 +182,7 @@ function App() {
       {sucess && <SuccessNotification message={sucess} onClose={() => setSucess(null)} />}
 
       <section className="flex w-full items-center justify-between p-3.5 bg-header gap-2 md:gap-0">
-        <h2 className="text-headline text-lg  hidden md:block">E-comm</h2>
-
-        <div className="bg-inputs text-paragraph w-md flex items-center justify-center rounded-2xl">
-          <input
-            className="p-2 focus:outline-none w-full"
-            type="text"
-            placeholder="Buscar"
-            value={searchTerm}
-            onChange={handleSearchChange}
-          />
-
-        </div>
-        <div>
+      <div>
           <ul className="flex gap-3.5 sm:p-1 md:p-0 ">
             {user ? (
               <li className="text-headline text-lg hover:underline"><Link to={"config"}>{user}</Link></li>
@@ -195,18 +194,35 @@ function App() {
             <li className="text-headline text-lg hover:underline ">
              {cartItems.length > 0  ?(
                <Link  to={"/cart"} className="flex items-center justify-center">
+
               <span className="material-symbols-outlined ">
                shopping_cart
                </span>
+
               <span className="absolute mb-8 ml-6 text-headline font-bold"> {cartItems.length}
               </span>
                </Link>
              ): <Link to={"/cart"}><span className="material-symbols-outlined">
              shopping_cart
              </span></Link>}
+             
             </li>
+      
           </ul>
         </div>
+
+        <div className="bg-inputs text-paragraph w-md flex items-center justify-center rounded-2xl">
+          <input
+            className="p-2 focus:outline-none w-full"
+            type="text"
+            placeholder="Buscar"
+            value={searchTerm}
+            onChange={handleSearchChange}
+          />
+
+        </div>
+       
+        <button onClick={logout} className="text-headline text-lg cursor-pointer hover:underline">Sair</button>
       </section>
 
       <div className="grid md:grid-cols-5 sm:grid-cols-1 gap-2 p-5">
