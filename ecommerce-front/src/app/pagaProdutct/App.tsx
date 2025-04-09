@@ -3,6 +3,7 @@ import { Link } from "react-router";
 import ErrorNotification from "../../components/errroNotification";
 import SuccessNotification from "../../components/sucessNotification";
 import { useNavigate } from "react-router";
+import { isTokenExpired } from "../../services/auth,";
 
 function App() {
   interface Product {
@@ -54,6 +55,7 @@ function App() {
         setError("Erro ao carregar o carrinho.");
       });
   };
+
   const logout = () =>{
     const token = localStorage.getItem("token");
     if(!token){
@@ -64,9 +66,14 @@ function App() {
       navigate("login")  
     }
   }
-  
+
   useEffect(() => {
     const token = localStorage.getItem("token");
+
+    if (token && isTokenExpired()) {
+      localStorage.clear();
+      return;
+    }
     if (token) {
       fetchCart();
     }
@@ -235,7 +242,7 @@ function App() {
             />
             <h3 className="text-lg font-bold mt-2 text-headline capitalize">{product.nome}</h3>
             <p className="text-sm text-paragraph capitalize">{product.descricao}</p>
-            <p className="text-sm text-headline flex gap-1.5 ">Estoque: <strong className="text-sm text-alert-stock"> {product.estoque <= 0 ? `Indisponivel` : product.estoque}</strong></p>
+            <p className="text-sm text-headline flex gap-1.5 ">Estoque: <strong className="text-sm text-alert-stock"> {product.estoque <= 0 ? `Sem Estoque` : product.estoque}</strong></p>
             <p className="text-base font-semibold text-green-600">R$ {product.preco}</p>
             <button
               className={`mt-2 p-2 rounded ${product.estoque <= 0 ? 'bg-gray-400 cursor-not-allowed' :'bg-new-button hover:bg-button-hover text-text-button'}`}

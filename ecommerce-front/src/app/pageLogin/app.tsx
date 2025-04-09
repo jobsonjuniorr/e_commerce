@@ -16,7 +16,7 @@ function Login() {
     
         const email = emailRef.current?.value.trim();
         const password = passwordRef.current?.value.trim();
-    
+       
         if (!email || !password) {
             setError("Campos não preenchidos");
             return;
@@ -24,14 +24,17 @@ function Login() {
     
         try {
             const response = await Api.post("http://localhost:5000/api/login", { email, password });
-          
+            const now = Date.now()
+            localStorage.setItem("token_created_at", now.toString());
 
             if(response.data.user.tipo === 'admin'){
                 localStorage.setItem("token", response.data.accessToken);
+                localStorage.setItem("token_created_at", now.toString());
                 localStorage.setItem("user",JSON.stringify(response.data.user))
                 navigate("/productAdm")
             }else{
                 localStorage.setItem("token", response.data.accessToken);
+                localStorage.setItem("token_created_at", now.toString());
                 localStorage.setItem("user",JSON.stringify(response.data.user))
                 navigate("/")
             }          
