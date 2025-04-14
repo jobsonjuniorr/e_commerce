@@ -39,6 +39,24 @@ export const getAddress = async(req,res) =>{
         });
     }
 }
+export const attAddress  = async(req,res) =>{
+    try{
+        const {  rua, numero, complemento, bairro, cidade, estado, cep,id} = req.body;
+        if (!rua || !numero || !complemento || !bairro || !cidade || !estado || !cep || !id) {
+            return res.status(400).json({ error: "Todos os campos obrigatórios devem ser preenchidos" });
+        }
+        const result = await Address.putAddres(rua, numero, complemento, bairro, cidade, estado, cep,id)
+      
+        res.status(201).json({ message: "Endereço atualizado com sucesso!" });
+
+    }catch(error){
+        console.error("Erro ao listar o carrinho:", error);
+        res.status(500).json({ 
+            error: "Erro interno do servidor", 
+            details: error.message 
+        });
+    }
+}
 export const getIdAddres = async(req,res)=>{
     try{
         const {id} = req.body

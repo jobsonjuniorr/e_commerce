@@ -28,7 +28,6 @@ const getAddress = async(usuario_id) =>{
     }
 }
 
-
 const getIdAddres = async(id) =>{
     const connection = await pool.getConnection()
     try{
@@ -41,4 +40,23 @@ const getIdAddres = async(id) =>{
     }
 }
 
-export default { postAddress,getAddress,getIdAddres };
+const putAddres  = async (rua, numero, complemento, bairro, cidade, estado, cep,id)=>{
+    const connection = await pool.getConnection()
+    try{
+    const sql = `UPDATE enderecos SET rua = ?, numero = ?, complemento = ?, bairro = ?, cidade = ?, estado = ?, cep = ? WHERE id = ?  `;
+
+    const values = [rua, numero, complemento, bairro, cidade, estado, cep,id];
+
+    const [result] = await connection.execute(sql, values);
+
+    return result
+    }catch(error){
+
+    }
+    finally{
+        connection.release()
+    }
+}
+
+
+export default { postAddress,getAddress,getIdAddres, putAddres };

@@ -1,5 +1,5 @@
 import express from "express";
-import { getAddress, getIdAddres, registerAddress } from "../controllers/addressController.js";
+import { getAddress, getIdAddres, registerAddress,attAddress } from "../controllers/addressController.js";
 import { authMiddleware } from "../middleware/authMiddleware.js";
 import { createProduct,deleteProduct,criarProduto,getProducts, updateProductAdm, subtritionStockProduct } from "../controllers/productController.js";
 import { cart,getCart,deleteCartOne,deleteCartAll, attCart, getCartOne } from "../controllers/cartController.js";
@@ -16,7 +16,7 @@ const protectedRouter = express.Router();
 protectedRouter.post("/enderecos", authMiddleware, registerAddress);
 protectedRouter.get("/enderecos/visualizacao",authMiddleware, getAddress)  
 protectedRouter.post("/enderecos/paymet",authMiddleware,getIdAddres)
-
+protectedRouter.put("/enderecos/att", authMiddleware,attAddress)
 protectedRouter.get("/productAdm",getProducts)
 protectedRouter.post("/products", authMiddleware, createProduct)
 protectedRouter.put("/updateProduct/:id",upload.single('imagem'),updateProductAdm)
