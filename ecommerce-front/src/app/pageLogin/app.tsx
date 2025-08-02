@@ -52,35 +52,56 @@ function Login() {
 
     }, [error])
     return (
-        <div className="h-dvh flex items-center justify-center flex-col md:flex-row">
+       <div className="min-h-dvh flex flex-col md:flex-row items-center justify-center">
+  <img
+    src={Image}
+    alt="Login-Imagem"
+    className="hidden md:block md:h-[40vh] lg:h-[50vh] xl:h-[60vh] 2xl:h-[70vh] object-contain rounded-l-2xl"
+  />
 
-            <img src={Image} alt="Login-Imagem" className="hidden md:block md:h-5/6" />
-            {error && <ErrorNotification message={error} onClose={() => setError(null)}></ErrorNotification>}
-            <form className="flex flex-col 2xl:h-2/6 p-6 gap-4 2xl:gap-9 2xl:4xl items-center justify-center h-full w-full md:h-5/6 md:w-2/6 bg-red-100" onSubmit={hadleSumit}>
-                <h2 className="text-2xl font-bold  text-center text-paragraph 2xl:text-5xl">Login</h2>
-                <input
-                    ref={emailRef}
-                    type="email"
-                    placeholder="Email"
-                    className="w-4/5 md:w-full md:text-xl  xl:text-sm xl:w-4/5   bg-input px-3 py-2 2xl:p-3 2xl:text-4xl border border-gray-300 rounded-md focus:outline-none"
-                />
-                <input
-                    ref={passwordRef}
-                    type="password"
-                    placeholder="Senha"
-                    className="w-4/5 md:w-full md:text-xl  xl:text-sm xl:w-4/5  px-3 bg-input py-2 border  2xl:p-3 2xl:text-4xl  border-gray-300 rounded-md focus:outline-none"
-                />
-                <button className="w-3/6 bg-button 2xl:p-3 2xl:text-4xl  py-2 px-4 rounded-md duration-200 bg-red-600 hover:bg-red-300">
-                    Login
-                </button>
-                <p className="text-text w-full flex justify-center gap-2  2xl:text-4xl " >
-                    Não tem uma conta?  <Link to="/register" className="text-text duration-200 hover:text-link hover:underline  block text-center">
-                        Cadastre-se
-                    </Link>
-                </p>
-            </form>
+  {error && (
+    <ErrorNotification
+      message={error}
+      onClose={() => setError(null)}
+    />
+  )}
 
-        </div>
+  <form
+    onSubmit={hadleSumit}
+    className="w-full max-w-md md:max-w-sm bg-card p-6 md:h-[70vh] flex flex-col justify-center gap-6 rounded-r-2xl shadow-md"
+  >
+    <h2 className="text-3xl font-bold text-center text-headline">Login</h2>
+
+    <input
+      ref={emailRef}
+      type="email"
+      placeholder="Email"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-red-400 text-headline"
+    />
+
+    <input
+      ref={passwordRef}
+      type="password"
+      placeholder="Senha"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-red-400 text-headline"
+    />
+
+    <button className="w-full py-2 rounded-md bg-new-button text-white font-semibold hover:bg-button-hover transition duration-200">
+      Login
+    </button>
+
+    <p className="text-sm text-center text-headline">
+      Não tem uma conta?{" "}
+      <Link
+        to="/register"
+        className="text-header hover:underline"
+      >
+        Cadastre-se
+      </Link>
+    </p>
+  </form>
+</div>
+
     )
 }
 

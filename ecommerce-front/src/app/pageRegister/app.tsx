@@ -71,50 +71,71 @@ function Register (){
     }, [error, sucess]);
     
     return(
-        <div className="h-dvh flex items-center justify-center flex-col md:flex-row">
+        <div className="min-h-dvh flex flex-col md:flex-row items-center justify-center bg-background px-4 py-6">
 
-            
-            {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
-            {sucess && <SuccessNotification message={sucess} onClose={() => setSuccess(null)} />}  
+  {/* Notificações */}
+  {error && <ErrorNotification message={error} onClose={() => setError(null)} />}
+  {sucess && <SuccessNotification message={sucess} onClose={() => setSuccess(null)} />}
 
-            <form className="flex flex-col 2xl:h-2/6 p-6 gap-4 2xl:gap-9 2xl:4xl items-center justify-center h-full w-full md:h-5/6 md:w-2/6 bg-red-100" onSubmit={handleSubmit}>
-            <h2 className="text-2xl font-bold  text-center text-paragraph 2xl:text-5xl">Cadastro</h2>
-            <input
-              ref={nameRef}
-              type="text"
-              placeholder="Nome"
-              className="w-4/5 md:w-full  md:text-xl  xl:text-sm xl:w-4/5   bg-input px-3 py-2 2xl:p-3 2xl:text-4xl border border-gray-300 rounded-md focus:outline-none"
-            />
-              <input
-              ref={telefoneRef}
-              type="text"
-              placeholder="Telefone"
-              className="w-4/5 md:w-full  md:text-xl  xl:text-sm xl:w-4/5   bg-input px-3 py-2 2xl:p-3 2xl:text-4xl border border-gray-300 rounded-md focus:outline-none"
-            />
-            <input
-              ref={emailRef}
-              type="email"
-              placeholder="Email"
-              className="w-4/5 md:w-full md:text-xl  xl:text-sm xl:w-4/5   bg-input px-3 py-2 2xl:p-3 2xl:text-4xl border border-gray-300 rounded-md focus:outline-none"
-            />
-            <input
-              ref={senhaRef}
-              type="password"
-              placeholder="Senha"
-              className="w-4/5 md:w-full md:text-xl  xl:text-sm xl:w-4/5   bg-input px-3 py-2 2xl:p-3 2xl:text-4xl border border-gray-300 rounded-md focus:outline-none"
-              autoComplete="current-password"
-            />
-            <button className="w-3/6 bg-button 2xl:p-3 2xl:text-4xl  py-2 px-4 rounded-md duration-200 bg-red-600 hover:bg-red-300">
-              Cadastrar-se
-            </button>
-            <p className="text-text w-full flex justify-center gap-2  2xl:text-4xl " >
-              Já tem uma conta?  <Link to="/login" className="text-text duration-200 hover:text-link hover:underline  block text-center">
-                Faça login
-              </Link>
-            </p>
-            </form>
-            <img src={Image} alt="Login-Imagem" className="hidden md:block md:h-5/6" />
-        </div>
+  {/* Formulário */}
+  <form
+    onSubmit={handleSubmit}
+    className="w-full max-w-md md:max-w-sm bg-card p-6 md:h-[70vh] flex flex-col justify-center gap-6 rounded-l-3xl shadow-m"
+  >
+    <h2 className="text-3xl font-bold text-center text-headline">Cadastro</h2>
+
+    <input
+      ref={nameRef}
+      type="text"
+      placeholder="Nome"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-red-400 text-headline"
+    />
+
+    <input
+      ref={telefoneRef}
+      type="text"
+      placeholder="Telefone"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-red-400 text-headline"
+    />
+
+    <input
+      ref={emailRef}
+      type="email"
+      placeholder="Email"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-red-400 text-headline"
+    />
+
+    <input
+      ref={senhaRef}
+      type="password"
+      placeholder="Senha"
+      autoComplete="current-password"
+      className="w-full px-4 py-2 border border-gray-300 rounded-md bg-input focus:outline-none focus:ring-2 focus:ring-red-400 text-headline"
+    />
+
+    <button className="w-full py-2 rounded-md bg-new-button text-white font-semibold hover:bg-button-hover transition duration-200">
+      Cadastrar-se
+    </button>
+
+    <p className="text-sm text-center text-headline">
+      Já tem uma conta?{" "}
+      <Link
+        to="/login"
+        className="text-new-button hover:underline"
+      >
+        Faça login!
+      </Link>
+    </p>
+  </form>
+
+  {/* Imagem */}
+  <img
+    src={Image}
+    alt="Cadastro-Imagem"
+    className="hidden md:block md:h-[40vh] lg:h-[50vh] xl:h-[60vh] 2xl:h-[70vh] object-contain ml-0 md:ml-0 rounded-r-2xl"
+  />
+</div>
+
     )
 }
 
